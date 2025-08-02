@@ -71,6 +71,7 @@ async def async_setup_entry(
         ("UnitEMonth", "Monthly Energy", "kWh", "mdi:solar-power"),
         ("UnitEYear", "Yearly Energy", "kWh", "mdi:solar-power"),
         ("UnitETotal", "Total Energy", "kWh", "mdi:solar-power"),
+        ("StrPeakPower", "Peak Power Today", "W", "mdi:flash"),
     ]
 
     entities = [

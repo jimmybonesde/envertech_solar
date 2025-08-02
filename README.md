@@ -5,6 +5,7 @@ A custom Home Assistant integration to retrieve real-time data from the Envertec
 ## Features
 
 - Current solar power in watts
+- Peak power
 - Daily, monthly, yearly, and total energy in kWh
 - Ready-to-use sensor templates
 - Cleanly packaged as a HACS-compatible custom integration
@@ -68,3 +69,7 @@ cards:
     entity: sensor.solartotalenergy
     name: Total Energy
     unit: kWh
+  - type: entity
+    entity: sensor.solarpeakpower
+    name: Peak Power Today
+    unit: kW
