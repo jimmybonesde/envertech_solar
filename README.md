@@ -35,7 +35,3 @@ cards:
     unit: W
     min: 0
     max: 5000
-
-## Credits
-
-Created with love for solar nerds by JImmyBOnes
