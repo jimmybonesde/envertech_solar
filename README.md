@@ -27,11 +27,17 @@ A custom Home Assistant integration to retrieve real-time data from the Envertec
 ## Example Dashboard Card
 
 ```yaml
-type: vertical-stack
-cards:
-  - type: gauge
-    entity: sensor.solartotalpower
+type: entities
+title: Envertech Solar Übersicht
+entities:
+  - entity: sensor.solartotalpower
     name: Aktuelle Leistung
-    unit: W
-    min: 0
-    max: 5000
+  - entity: sensor.solartodayenergy
+    name: Tagesenergie
+  - entity: sensor.solarmonthenergy
+    name: Monatsenergie
+  - entity: sensor.solaryearenergy
+    name: Jahresenergie
+  - entity: sensor.solartotalenergy
+    name: Gesamtenergie
+
