@@ -24,6 +24,10 @@ A custom Home Assistant integration to retrieve real-time data from the Envertec
 2. Copy the `envertech_solar` folder to `custom_components/envertech_solar/` inside your Home Assistant config directory.
 3. Restart Home Assistant and follow the setup instructions above.
 
+## Credits
+
+Created with love for solar nerds by JImmyBOnes
+
 ## Example Dashboard Card
 
 <img width="384" height="677" alt="grafik" src="https://github.com/user-attachments/assets/62f80770-51ef-448a-96ce-a2aaf2bd4427" />
@@ -60,5 +64,4 @@ cards:
   - type: entity
     entity: sensor.solartotalenergy
     name: Total Energy
-    unit: kWh
-
+    unit: kWh****
