@@ -40,3 +40,5 @@ entities:
     name: Yearly Energy
   - entity: sensor.solartotalenergy
     name: Total Energy
+
+<img width="804" height="1361" alt="grafik" src="https://github.com/user-attachments/assets/14c56e42-6cc5-468e-916c-ae7bc9313e2a" />
