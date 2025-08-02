@@ -18,6 +18,9 @@ A custom Home Assistant integration to retrieve real-time data from the Envertec
 3. Restart Home Assistant.
 4. Go to **Settings → Devices & Services → Integrations → + Add Integration**, search for "Envertech Solar".
 5. Enter your **Station ID** from `envertecportal.com`.
+Can be found by clicking on one of your solar panels in the Envertech Cloud via a browser at the URL
+https://www.envertecportal.com/terminal/systemhistory/03GFF6E15154525DA16901EC7A4541G1?sn=3014511
+where 03GFF6E15154525DA16901EC7A4541G1 is your station ID.
 
 ### Manual Installation
 1. Download or clone this repository.
@@ -64,4 +67,4 @@ cards:
   - type: entity
     entity: sensor.solartotalenergy
     name: Total Energy
-    unit: kWh****
+    unit: kWh
