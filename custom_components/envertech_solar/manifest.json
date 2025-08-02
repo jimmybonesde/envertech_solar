@@ -1,7 +1,7 @@
 {
   "domain": "envertech_solar",
   "name": "Envertech Solar",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "documentation": "https://github.com/jimmybonesde/envertech_solar",
   "dependencies": [],
   "codeowners": ["@jimmybonesde"],
