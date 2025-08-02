@@ -28,16 +28,15 @@ A custom Home Assistant integration to retrieve real-time data from the Envertec
 
 ```yaml
 type: entities
-title: Envertech Solar Übersicht
+title: Envertech Solar Overview
 entities:
   - entity: sensor.solartotalpower
-    name: Aktuelle Leistung
+    name: Current Power
   - entity: sensor.solartodayenergy
-    name: Tagesenergie
+    name: Daily Energy
   - entity: sensor.solarmonthenergy
-    name: Monatsenergie
+    name: Monthly Energy
   - entity: sensor.solaryearenergy
-    name: Jahresenergie
+    name: Yearly Energy
   - entity: sensor.solartotalenergy
-    name: Gesamtenergie
-
+    name: Total Energy
