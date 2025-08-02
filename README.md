@@ -26,6 +26,8 @@ A custom Home Assistant integration to retrieve real-time data from the Envertec
 
 ## Example Dashboard Card
 
+<img width="804" height="1361" alt="grafik" src="https://github.com/user-attachments/assets/14c56e42-6cc5-468e-916c-ae7bc9313e2a" />
+
 ```yaml
 type: entities
 title: Envertech Solar Overview
@@ -40,5 +42,3 @@ entities:
     name: Yearly Energy
   - entity: sensor.solartotalenergy
     name: Total Energy
-
-<img width="804" height="1361" alt="grafik" src="https://github.com/user-attachments/assets/14c56e42-6cc5-468e-916c-ae7bc9313e2a" />
