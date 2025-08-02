@@ -1,0 +1,11 @@
+{
+  "domain": "envertech_solar",
+  "name": "Envertech Solar",
+  "version": "1.0.0",
+  "documentation": "https://github.com/jimmybonesde/envertech_solar",
+  "dependencies": [],
+  "codeowners": ["@jimmybonesde"],
+  "requirements": [],
+  "config_flow": true,
+  "iot_class": "cloud_polling"
+}

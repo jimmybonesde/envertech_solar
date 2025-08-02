@@ -1,0 +1,13 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Envertech Einrichtung",
+        "description": "Gib deine Envertech Station-ID ein",
+        "data": {
+          "station_id": "Stations-ID"
+        }
+      }
+    }
+  }
+}
