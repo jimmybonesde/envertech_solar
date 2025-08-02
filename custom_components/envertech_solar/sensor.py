@@ -90,6 +90,14 @@ class EnvertechSensor(SensorEntity):
         self._attr_native_unit_of_measurement = unit
         self._attr_icon = icon
 
+        # Set device_class and state_class for energy sensors for HA Energy Dashboard compatibility
+        if unit == "kWh":
+            self._attr_device_class = "energy"
+            self._attr_state_class = "total_increasing"
+        elif unit == "W":
+            self._attr_device_class = "power"
+            self._attr_state_class = "measurement"
+
     @property
     def unique_id(self):
         return f"{DOMAIN}_{self.sensor_key}_{self.coordinator.station_id}"
@@ -105,7 +113,7 @@ class EnvertechSensor(SensorEntity):
             return None
         if isinstance(val, str):
             try:
-                # Entferne Einheiten wie "kWh" oder "W" aus dem String
+                # Entferne Einheiten wie "kWh" oder "W" aus dem String und konvertiere zu float
                 val_cleaned = (
                     val.replace(",", ".")
                        .replace("kWh", "")
