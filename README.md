@@ -90,4 +90,4 @@ cards:
     unit: kWh
   - type: entity
     entity: sensor.peak_power_today
-    name: Peak Power Today
+    name: Peak Power
