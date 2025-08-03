@@ -1,4 +1,4 @@
-# Envertech Solar Integration for Home Assistant
+# Envertech Solar Integration for Home Assistant :)
 
 A custom Home Assistant integration to retrieve real-time data from the Envertech Solar Portal (`envertecportal.com`) using your station ID.
 

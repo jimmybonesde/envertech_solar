@@ -37,7 +37,7 @@ class EnvertechDataUpdateCoordinator(DataUpdateCoordinator):
             hass,
             _LOGGER,
             name="Envertech Solar Data Coordinator",
-            update_interval=timedelta(seconds=30),
+            update_interval=timedelta(seconds=60),
         )
         self.station_id = station_id
 
