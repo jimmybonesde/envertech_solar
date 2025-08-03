@@ -49,7 +49,7 @@ Created with love for solar nerds by JImmyBOnes
 
 ## Example Dashboard Card
 
-<img width="400" height="781" alt="grafik" src="https://github.com/user-attachments/assets/94e7f039-3f2a-4d17-ba50-1c85c033d49a" />
+<img width="400" height="782" alt="grafik" src="https://github.com/user-attachments/assets/29e33858-5551-44f5-a619-2beddf781b13" />
 
 
 
@@ -60,32 +60,29 @@ cards:
     content: |
       ## ☀️ Solar Power Overview
   - type: gauge
-    entity: sensor.solartotalpower
+    entity: sensor.current_power_2
     name: Current Power
     unit: W
     min: 0
-    max: 5000
+    max: 2000
     severity:
       green: 0
-      yellow: 2500
-      red: 4000
+      yellow: 1500
+      red: 2000
   - type: entity
-    entity: sensor.solartodayenergy
+    entity: sensor.daily_energy_2
     name: Daily Energy
     unit: kWh
   - type: entity
-    entity: sensor.solarmonthenergy
+    entity: sensor.monthly_energy_2
     name: Monthly Energy
-    unit: kWh
   - type: entity
-    entity: sensor.solaryearenergy
+    entity: sensor.yearly_energy_2
     name: Yearly Energy
-    unit: kWh
   - type: entity
-    entity: sensor.solartotalenergy
+    entity: sensor.total_energy_2
     name: Total Energy
     unit: kWh
   - type: entity
-    entity: sensor.solarpeakpower
+    entity: sensor.peak_power_today
     name: Peak Power Today
-    unit: kW
