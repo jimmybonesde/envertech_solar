@@ -64,7 +64,7 @@ cards:
     content: |
       ## ☀️ Solar Power Overview
   - type: gauge
-    entity: sensor.current_power_2
+    entity: sensor.current_power
     name: Current Power
     unit: W
     min: 0
@@ -74,22 +74,22 @@ cards:
       yellow: 1500
       red: 2000
   - type: entity
-    entity: sensor.daily_energy_2
+    entity: sensor.daily_energy
     name: Daily Energy
     unit: kWh
   - type: entity
-    entity: sensor.monthly_energy_2
+    entity: sensor.monthly_energy
     name: Monthly Energy
   - type: entity
-    entity: sensor.yearly_energy_2
+    entity: sensor.yearly_energy
     name: Yearly Energy
   - type: entity
-    entity: sensor.total_energy_2
+    entity: sensor.total_energy
     name: Total Energy
     unit: kWh
   - type: entities
     entities:
       - entity: sensor.peak_power_today
         name: Daily Peak Power
-      - entity: sensor.strpeakpower_2
+      - entity: sensor.strpeakpower
         name: All-Time Peak Power
