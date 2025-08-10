@@ -60,7 +60,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
         ("UnitEYear", "Yearly Energy", "kWh", "mdi:solar-power"),
         ("UnitETotal", "Total Energy", "kWh", "mdi:solar-power"),
         ("InvModel1", "Inverter Model", None, "mdi:solar-power"),
-        ("StrPeakPower", "Peak Power (All-Time)", None, "mdi:flash"),
+        ("StrPeakPower", "All-Time Peak Power", None, "mdi:flash"),  # eindeutiger Name
     ]
 
     entities = [
@@ -95,7 +95,9 @@ class EnvertechSensor(SensorEntity):
 
     @property
     def unique_id(self):
-        return f"{DOMAIN}_{self.sensor_key}_{self.station_id}"
+        # unique_id muss eindeutig sein
+        # z.B. "envertech_strpeakpower_<station_id>" für StrPeakPower
+        return f"{DOMAIN}_{self.sensor_key.lower()}_{self.station_id}"
 
     @property
     def device_info(self) -> DeviceInfo:
@@ -161,7 +163,8 @@ class EnvertechPeakTodaySensor(RestoreEntity, SensorEntity):
 
     @property
     def unique_id(self):
-        return f"{DOMAIN}_peak_today_{self.station_id}"
+        # eindeutige unique_id, anders als StrPeakPower
+        return f"{DOMAIN}_peak_power_today_{self.station_id}"
 
     @property
     def device_info(self) -> DeviceInfo:
