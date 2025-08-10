@@ -149,7 +149,7 @@ class EnvertechPeakTodaySensor(RestoreEntity, SensorEntity):
     def __init__(self, coordinator, station_id):
         self.coordinator = coordinator
         self.station_id = station_id
-        self._attr_name = "Peak Power Today"
+        self._attr_name = "Daily Peak Power"  # eindeutiger Name
         self._attr_native_unit_of_measurement = "W"
         self._attr_icon = "mdi:flash"
         self._attr_device_class = "power"
