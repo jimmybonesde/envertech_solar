@@ -103,25 +103,37 @@ cards:
     max: 2000
     severity:
       green: 0
-      yellow: 1500
-      red: 2000
-  - type: entity
-    entity: sensor.daily_energy
-    name: Daily Energy
-    unit: kWh
-  - type: entity
-    entity: sensor.monthly_energy
-    name: Monthly Energy
-  - type: entity
-    entity: sensor.yearly_energy
-    name: Yearly Energy
-  - type: entity
-    entity: sensor.total_energy
-    name: Total Energy
-    unit: kWh
+      yellow: 1000
+      red: 1500
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: entity
+        entity: sensor.daily_energy
+        name: Daily Energy
+        unit: kWh
+        icon: mdi:weather-sunny
+      - type: entity
+        entity: sensor.monthly_energy
+        name: Monthly Energy
+        unit: kWh
+        icon: mdi:calendar-month
+      - type: entity
+        entity: sensor.yearly_energy
+        name: Yearly Energy
+        unit: kWh
+        icon: mdi:calendar
+      - type: entity
+        entity: sensor.total_energy
+        name: Total Energy
+        unit: kWh
+        icon: mdi:counter
   - type: entities
     entities:
-      - entity: sensor.peak_power_today
-        name: Daily Peak Power
-      - entity: sensor.strpeakpower
+      - entity: sensor.daily_peak_power
+        name: Today’s Peak Power
+        icon: mdi:flash
+      - entity: sensor.all_time_peak_power
         name: All-Time Peak Power
+        icon: mdi:flash
