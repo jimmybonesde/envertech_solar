@@ -52,7 +52,8 @@ A custom Home Assistant integration to retrieve real-time data from the Envertec
 | `UnitEYear`       | Yearly Energy      | kWh   | Energy produced this year                      |
 | `UnitETotal`      | Total Energy       | kWh   | Total energy since commissioning              |
 
-<img width="403" height="795" alt="grafik" src="https://github.com/user-attachments/assets/341f66b1-351b-4bd9-84ea-0b1e47bf8824" />
+<img width="484" height="605" alt="grafik" src="https://github.com/user-attachments/assets/4d6787c6-ac72-4726-8753-f7537e0836e3" />
+
 
 ## Credits
 
