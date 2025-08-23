@@ -7,6 +7,7 @@
   "codeowners": ["@jimmybonesde"],
   "requirements": [],
   "config_flow": true,
+  "issue_tracker": "https://github.com/jimmybonesde/envertech_solar/issues",
   "icons": {
     "48": "images/icon.png"
   },
