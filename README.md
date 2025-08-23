@@ -1,4 +1,4 @@
-<img width="1024" height="778" alt="logo" src="https://github.com/user-attachments/assets/d09ed350-7d77-4f8b-ad1b-c53c6eadc135" />
+<img width="350" height="220" alt="logo" src="https://github.com/user-attachments/assets/d09ed350-7d77-4f8b-ad1b-c53c6eadc135" />
 
 
 # Envertech Solar Integration for Home Assistant ☀️
