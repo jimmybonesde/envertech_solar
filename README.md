@@ -58,6 +58,29 @@ A custom Home Assistant integration to retrieve real-time data from the Envertec
 
 Created with love for solar nerds by JimmyBones
 
+## 💡 Tips & FAQ
+
+### Finding Your Station ID
+- Your station ID is required to set up the integration.  
+- You can find it in the URL after clicking on one of your solar panels in the Envertech Portal:  
+  `https://www.envertecportal.com/terminal/systemhistory/<STATION_ID>?sn=XXXXX`
+
+### Sensor Tips
+- `Power` shows real-time solar output in watts.  
+- `UnitEToday`, `UnitEMonth`, `UnitEYear`, `UnitETotal` are cumulative kWh values – use these for dashboard history cards.  
+- `peak_power_today` updates dynamically throughout the day.  
+- `strpeakpower` is retrieved from the Envertech API and may not update in real-time.  
+
+### Common Issues
+- **Integration not appearing in HACS:** Make sure the repository is public and HACS has been refreshed.  
+- **Station ID invalid:** Double-check that you copied the correct ID from the portal URL.  
+- **Sensors showing `unknown` values:** Ensure your inverter is online and reporting data to the Envertech Portal.  
+
+### Dashboard Tips
+- Use `gauge` cards for real-time power, and `entity` or `entities` cards for cumulative energy metrics.  
+- Combine sensors in a `vertical-stack` or `grid` card for a clean overview.  
+- Optional: Add conditional coloring on gauges to visualize thresholds (green/yellow/red) for easy monitoring.
+
 ## 📊 Example Dashboard Card
 
 ```yaml
