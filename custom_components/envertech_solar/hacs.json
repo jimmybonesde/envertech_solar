@@ -2,7 +2,6 @@
   "name": "Envertech Solar",
   "domain": "envertech_solar",
   "content_in_root": false,
-  "documentation": "https://github.com/jimmybonesde/envertech_solar",
   "requirements": [],
   "iot_class": "cloud_polling",
   "homeassistant": "2024.6.0"
