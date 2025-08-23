@@ -60,33 +60,34 @@ Created with love for solar nerds by JimmyBones
 
 ## 💡 Tips & FAQ
 
-### Finding Your Station ID
+### 🔍 Finding Your Station ID
 To set up the **Envertech Solar Integration**, you need your **Station ID**.  
-1. Go to the [Envertech Portal](https://www.envertecportal.com/terminal/systemoverview).  
+1. Open the [Envertech Portal](https://www.envertecportal.com/terminal/systemoverview).  
 2. Click on one of your solar panels:  
 
 <img width="800" alt="Click on a solar panel" src="https://github.com/user-attachments/assets/77d86a11-26fe-4db6-a985-79ca1fdd157b" />
 
-3. After clicking, look at the URL in your browser. It will look something like this:
-https://www.envertecportal.com/terminal/systemhistory/03GFF6E15154525DA16901EC7A4541G1?sn=3014511
-4. The part after `/systemhistory/` up to the `?sn=` parameter is your **Station ID**:  
+3. Check the URL in your browser. It will look like this: https://www.envertecportal.com/terminal/systemhistory/03GFF6E15154525DA16901EC7A4541G1?sn=3014511
+
+4. The part after `/systemhistory/` and before `?sn=` is your **Station ID**:  
 > `03GFF6E15154525DA16901EC7A4541G1`
 
-### Sensor Tips
-- `Power` shows real-time solar output in watts.  
-- `UnitEToday`, `UnitEMonth`, `UnitEYear`, `UnitETotal` are cumulative kWh values – use these for dashboard history cards.  
-- `peak_power_today` updates dynamically throughout the day.  
-- `strpeakpower` is retrieved from the Envertech API and may not update in real-time.  
+### ⚡ Sensor Tips
+- **`Power`**: Real-time solar output in watts.  
+- **`UnitEToday`, `UnitEMonth`, `UnitEYear`, `UnitETotal`**: Cumulative energy in kWh – ideal for history cards.  
+- **`peak_power_today`**: Updates dynamically throughout the day.  
+- **`strpeakpower`**: Retrieved from the Envertech API; may not update in real-time.
 
-### Common Issues
-- **Integration not appearing in HACS:** Make sure the repository is public and HACS has been refreshed.  
-- **Station ID invalid:** Double-check that you copied the correct ID from the portal URL.  
-- **Sensors showing `unknown` values:** Ensure your inverter is online and reporting data to the Envertech Portal.  
+### ❗ Common Issues
+- **Integration not appearing in HACS**: Ensure the repository is public and refresh HACS.  
+- **Invalid Station ID**: Double-check the ID copied from the portal URL.  
+- **Sensors showing `unknown`**: Verify your inverter is online and reporting data to the Envertech Portal.
 
-### Dashboard Tips
-- Use `gauge` cards for real-time power, and `entity` or `entities` cards for cumulative energy metrics.  
-- Combine sensors in a `vertical-stack` or `grid` card for a clean overview.  
-- Optional: Add conditional coloring on gauges to visualize thresholds (green/yellow/red) for easy monitoring.
+### 📊 Dashboard Tips
+- Use **gauge** cards for real-time power.  
+- Use **entity** or **entities** cards for cumulative energy metrics.  
+- Combine sensors in a **vertical-stack** or **grid** card for a clean overview.  
+- Optional: Apply conditional coloring on gauges (green/yellow/red) to visualize thresholds easily.
 
 ## 📊 Example Dashboard Card
 
