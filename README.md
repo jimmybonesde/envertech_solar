@@ -65,7 +65,7 @@ To set up the **Envertech Solar Integration**, you need your **Station ID**.
 1. Open the [Envertech Portal](https://www.envertecportal.com/terminal/systemoverview).  
 2. Click on one of your solar panels:  
 
-<img width="800" alt="Click on a solar panel" src="https://github.com/user-attachments/assets/77d86a11-26fe-4db6-a985-79ca1fdd157b" />
+<img width="400" alt="Click on a solar panel" src="https://github.com/user-attachments/assets/77d86a11-26fe-4db6-a985-79ca1fdd157b" />
 
 3. Check the URL in your browser. It will look like this: https://www.envertecportal.com/terminal/systemhistory/03GFF6E15154525DA16901EC7A4541G1?sn=3014511
 
