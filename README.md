@@ -13,7 +13,8 @@ A custom Home Assistant integration to retrieve real-time data from the Envertec
 - Inverter model information
 - Daily, monthly, yearly, and total energy in kWh
 - Robust, ready-to-use sensor templates
-- HACS-compatible for easy installation and updates
+- HACS-compatible for easy installation and updates  
+  [Click here to add this integration to HACS](https://my.home-assistant.io/redirect/hacs_repository/?owner=jimmybonesde&repository=envertech_solar&category=integration)
 - Designed for Envertech ECO / SE series inverters (e.g. 2000SE)
 
 ## Installation
