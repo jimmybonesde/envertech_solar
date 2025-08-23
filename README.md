@@ -2,6 +2,8 @@
 
 A custom Home Assistant integration to retrieve real-time data from the Envertech Solar Portal (`envertecportal.com`) using your station ID.
 
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=jimmybonesde&repository=envertech_solar&category=integration)
+
 ## Features
 
 - Live solar power in watts
@@ -38,16 +40,16 @@ A custom Home Assistant integration to retrieve real-time data from the Envertec
 ## 📡 Available Sensors
 
 | Sensor Key        | Name               | Unit  | Description                                      |
-|-------------------|--------------------|-------|------------------------------------------------|
-| `Power`           | Current Power      | W     | Current solar power output                       |
-| `peak_power_today` | Daily Peak Power   | W     | Daily peak power calculated from live data      |
-| `strpeakpower`    | All-Time Peak Power | W     | Peak power ever recorded by the inverter (API)  |
-| `UnitCapacity`    | Capacity           | kWp   | Installed solar system capacity                   |
-| `InvModel1`       | Inverter Model     | —     | Model of the inverter                            |
-| `UnitEToday`      | Daily Energy       | kWh   | Energy produced today                            |
-| `UnitEMonth`      | Monthly Energy     | kWh   | Energy produced this month                        |
-| `UnitEYear`       | Yearly Energy      | kWh   | Energy produced this year                         |
-| `UnitETotal`      | Total Energy       | kWh   | Total energy since commissioning                  |
+|-------------------|-------------------|-------|------------------------------------------------|
+| `Power`           | Current Power      | W     | Current solar power output                     |
+| `peak_power_today` | Daily Peak Power   | W     | Daily peak power calculated from live data    |
+| `strpeakpower`    | All-Time Peak Power | W     | Peak power ever recorded by the inverter (API)|
+| `UnitCapacity`    | Capacity           | kWp   | Installed solar system capacity               |
+| `InvModel1`       | Inverter Model     | —     | Model of the inverter                          |
+| `UnitEToday`      | Daily Energy       | kWh   | Energy produced today                          |
+| `UnitEMonth`      | Monthly Energy     | kWh   | Energy produced this month                     |
+| `UnitEYear`       | Yearly Energy      | kWh   | Energy produced this year                      |
+| `UnitETotal`      | Total Energy       | kWh   | Total energy since commissioning              |
 
 <img width="403" height="795" alt="grafik" src="https://github.com/user-attachments/assets/341f66b1-351b-4bd9-84ea-0b1e47bf8824" />
 
