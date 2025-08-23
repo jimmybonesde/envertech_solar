@@ -52,8 +52,6 @@ A custom Home Assistant integration to retrieve real-time data from the Envertec
 | `UnitEYear`       | Yearly Energy      | kWh   | Energy produced this year                      |
 | `UnitETotal`      | Total Energy       | kWh   | Total energy since commissioning              |
 
-<img width="484" height="605" alt="grafik" src="https://github.com/user-attachments/assets/4d6787c6-ac72-4726-8753-f7537e0836e3" />
-
 
 ## Credits
 
@@ -89,6 +87,8 @@ To set up the **Envertech Solar Integration**, you need your **Station ID**.
 - Optional: Apply conditional coloring on gauges (green/yellow/red) to visualize thresholds easily.
 
 ## 📊 Example Dashboard Card
+
+<img width="484" height="605" alt="grafik" src="https://github.com/user-attachments/assets/4d6787c6-ac72-4726-8753-f7537e0836e3" />
 
 ```yaml
 type: vertical-stack
