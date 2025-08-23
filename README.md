@@ -1,8 +1,6 @@
-<img width="341" height="259" alt="logo" src="https://github.com/user-attachments/assets/d396989c-63ab-412f-ad09-fa1e0db7192d" />
-
-
-
 # Envertech Solar Integration for Home Assistant ☀️
+
+<img width="341" height="259" alt="logo" src="https://github.com/user-attachments/assets/d396989c-63ab-412f-ad09-fa1e0db7192d" />
 
 A custom Home Assistant integration to retrieve real-time data from the Envertech Solar Portal (`envertecportal.com`) using your station ID.
 
