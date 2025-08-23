@@ -68,9 +68,7 @@ To set up the **Envertech Solar Integration**, you need your **Station ID**.
 <img width="400" alt="Click on a solar panel" src="https://github.com/user-attachments/assets/77d86a11-26fe-4db6-a985-79ca1fdd157b" />
 
 3. Check the URL in your browser. It will look like this: https://www.envertecportal.com/terminal/systemhistory/03GFF6E15154525DA16901EC7A4541G1?sn=3014511
-
-4. The part after `/systemhistory/` and before `?sn=` is your **Station ID**:  
-> `03GFF6E15154525DA16901EC7A4541G1`
+4. The part after `/systemhistory/` and before `?sn=` is your **Station ID**:  > `03GFF6E15154525DA16901EC7A4541G1`
 
 ### ⚡ Sensor Tips
 - **`Power`**: Real-time solar output in watts.  
