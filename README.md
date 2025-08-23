@@ -61,9 +61,16 @@ Created with love for solar nerds by JimmyBones
 ## 💡 Tips & FAQ
 
 ### Finding Your Station ID
-- Your station ID is required to set up the integration.  
-- You can find it in the URL after clicking on one of your solar panels in the Envertech Portal:  
-  `https://www.envertecportal.com/terminal/systemhistory/<STATION_ID>?sn=XXXXX`
+To set up the **Envertech Solar Integration**, you need your **Station ID**.  
+1. Go to the [Envertech Portal](https://www.envertecportal.com/terminal/systemoverview).  
+2. Click on one of your solar panels:  
+
+<img width="800" alt="Click on a solar panel" src="https://github.com/user-attachments/assets/77d86a11-26fe-4db6-a985-79ca1fdd157b" />
+
+3. After clicking, look at the URL in your browser. It will look something like this:
+https://www.envertecportal.com/terminal/systemhistory/03GFF6E15154525DA16901EC7A4541G1?sn=3014511
+4. The part after `/systemhistory/` up to the `?sn=` parameter is your **Station ID**:  
+> `03GFF6E15154525DA16901EC7A4541G1`
 
 ### Sensor Tips
 - `Power` shows real-time solar output in watts.  
