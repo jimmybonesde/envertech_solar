@@ -1,6 +1,4 @@
 {
-  "name": "Envertech Solar",
-  "hacs": "1.0.0",
-  "render_readme": true,
-  "homeassistant": "2024.6.0"
+  "name": "Beem_Energy",
+  "render_readme": true
 }
