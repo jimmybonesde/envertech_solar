@@ -1,13 +1,12 @@
 {
   "domain": "envertech_solar",
   "name": "Envertech Solar",
-  "version": "1.0.9",
-  "documentation": "https://github.com/jimmybonesde/envertech_solar",
-  "issue_tracker": "https://github.com/jimmybonesde/envertech_solar/issues",
   "codeowners": ["@jimmybonesde"],
-  "requirements": [],
-  "dependencies": [],
   "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/jimmybonesde/envertech_solar",
   "iot_class": "cloud_polling",
-  "min_homeassistant_version": "2024.6.0"
+  "issue_tracker": "https://github.com/jimmybonesde/envertech_solar/issues",
+  "requirements": [],
+  "version": "1.0.9"
 }
