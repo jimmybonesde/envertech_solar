@@ -58,7 +58,7 @@ A custom Home Assistant integration to retrieve real-time data from the Envertec
 | "CreateTime"      |  Start Date        |  None  | Date you setup your Envertec Powerstation |
 
  
-<img width="300" height="500" alt="grafik" src="https://github.com/user-attachments/assets/e4402d2e-155c-425c-bb9e-d1bfa3d65c27" />
+<img width="339" height="724" alt="Bildschirmfoto vom 2025-11-03 23-23-24" src="https://github.com/user-attachments/assets/1715cfcf-a921-4880-ae17-04f783556493" />
 
 
 ## Credits
