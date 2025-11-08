@@ -61,6 +61,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
         ("UnitETotal", "Total Energy", "kWh", "mdi:solar-power"),
         ("InvModel1", "Inverter Model", None, "mdi:solar-power"),
         ("StrPeakPower", "All-Time Peak Power", None, "mdi:flash"),  # eindeutiger Name
+        ("StrIncome", "Income", "€", "mdi:cash"),
+        ("StrCO2", "Carbon Offset", "ton", "mdi:molecule-co2"),
+	    ("CreateTime",  "Start Date", None, "mdi:view-day"),
     ]
 
     entities = [
@@ -125,14 +128,23 @@ class EnvertechSensor(SensorEntity):
 
         if isinstance(val, str):
             try:
-                cleaned = val.replace(",", ".").replace("kWh", "").replace("W", "").replace("kW", "").strip()
+                # Entferne unerwünschte Zeichen
+                cleaned = (
+                    val.replace(",", ".")
+                       .replace("kWh", "")
+                       .replace("W", "")
+                       .replace("kW", "")
+                       .replace("€", "")
+                       .replace("ton", "")
+                       .strip()
+                )
                 number = float(cleaned)
                 if "kW" in val and self._attr_native_unit_of_measurement == "W":
                     number *= 1000
                 return number
             except Exception as e:
                 _LOGGER.warning("Could not convert value '%s' for sensor '%s': %s", val, self.sensor_key, e)
-                return None
+                return val  # <--- vorher: return None, jetzt geben wir den String zurück, falls nicht konvertierbar
 
         return val
 
