@@ -257,3 +257,4 @@ class EnvertechPeakTodaySensor(RestoreEntity, SensorEntity):
         self.async_on_remove(
             self.coordinator.async_add_listener(self.async_write_ha_state)
         )
+
