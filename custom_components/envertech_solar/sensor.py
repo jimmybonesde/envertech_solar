@@ -60,10 +60,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
         ("UnitEYear", "Yearly Energy", "kWh", "mdi:solar-power"),
         ("UnitETotal", "Total Energy", "kWh", "mdi:solar-power"),
         ("InvModel1", "Inverter Model", None, "mdi:solar-power"),
-        ("StrPeakPower", "All-Time Peak Power", None, "mdi:flash"),  # eindeutiger Name
+        ("StrPeakPower", "All-Time Peak Power", None, "mdi:flash"),
         ("StrIncome", "Income", "€", "mdi:cash"),
         ("StrCO2", "Carbon Offset", "ton", "mdi:molecule-co2"),
-	    ("CreateTime",  "Start Date", None, "mdi:view-day"),
+        ("CreateTime", "Start Date", None, "mdi:view-day"),
     ]
 
     entities = [
@@ -98,8 +98,6 @@ class EnvertechSensor(SensorEntity):
 
     @property
     def unique_id(self):
-        # unique_id muss eindeutig sein
-        # z.B. "envertech_strpeakpower_<station_id>" für StrPeakPower
         return f"{DOMAIN}_{self.sensor_key.lower()}_{self.station_id}"
 
     @property
@@ -123,28 +121,43 @@ class EnvertechSensor(SensorEntity):
         if val is None:
             return None
 
+        # Sensoren, die als String angezeigt werden sollen
         if self.sensor_key in ("UnitCapacity", "StrPeakPower", "InvModel1"):
             return val
 
         if isinstance(val, str):
             try:
-                # Entferne unerwünschte Zeichen
-                cleaned = (
-                    val.replace(",", ".")
-                       .replace("kWh", "")
-                       .replace("W", "")
-                       .replace("kW", "")
-                       .replace("€", "")
-                       .replace("ton", "")
-                       .strip()
-                )
-                number = float(cleaned)
-                if "kW" in val and self._attr_native_unit_of_measurement == "W":
+                cleaned = val.replace(",", ".").strip()
+
+                # Energieeinheiten
+                if "MWh" in cleaned:
+                    number = float(cleaned.replace("MWh", "").strip()) * 1000  # MWh -> kWh
+                elif "kWh" in cleaned:
+                    number = float(cleaned.replace("kWh", "").strip())
+                # Leistungs-Einheiten
+                elif "kW" in cleaned:
+                    number = float(cleaned.replace("kW", "").strip()) * 1000  # kW -> W
+                elif "W" in cleaned:
+                    number = float(cleaned.replace("W", "").strip())
+                # Sonstige Einheiten
+                elif "€" in cleaned:
+                    number = float(cleaned.replace("€", "").strip())
+                elif "ton" in cleaned:
+                    number = float(cleaned.replace("ton", "").strip())
+                else:
+                    number = float(cleaned)
+
+                # Speziell für Total/Yearly Energy in W umrechnen, falls nötig
+                if self._attr_native_unit_of_measurement == "W" and self.sensor_key in ("UnitETotal", "UnitEYear"):
                     number *= 1000
+
                 return number
+
             except Exception as e:
-                _LOGGER.warning("Could not convert value '%s' for sensor '%s': %s", val, self.sensor_key, e)
-                return val  # <--- vorher: return None, jetzt geben wir den String zurück, falls nicht konvertierbar
+                _LOGGER.warning(
+                    "Could not convert value '%s' for sensor '%s': %s", val, self.sensor_key, e
+                )
+                return val
 
         return val
 
@@ -163,7 +176,7 @@ class EnvertechPeakTodaySensor(RestoreEntity, SensorEntity):
     def __init__(self, coordinator, station_id):
         self.coordinator = coordinator
         self.station_id = station_id
-        self._attr_name = "Daily Peak Power"  # eindeutiger Name
+        self._attr_name = "Daily Peak Power"
         self._attr_native_unit_of_measurement = "W"
         self._attr_icon = "mdi:flash"
         self._attr_device_class = "power"
@@ -175,7 +188,6 @@ class EnvertechPeakTodaySensor(RestoreEntity, SensorEntity):
 
     @property
     def unique_id(self):
-        # eindeutige unique_id, anders als StrPeakPower
         return f"{DOMAIN}_peak_power_today_{self.station_id}"
 
     @property
@@ -195,7 +207,6 @@ class EnvertechPeakTodaySensor(RestoreEntity, SensorEntity):
 
     @property
     def extra_state_attributes(self):
-        """Zeigt die Uhrzeit an, wann der Peak erreicht wurde."""
         if self._peak_time:
             return {
                 "peak_time": self._peak_time.strftime("%H:%M:%S"),
@@ -232,7 +243,6 @@ class EnvertechPeakTodaySensor(RestoreEntity, SensorEntity):
             self._peak_time = datetime.now()
 
     async def async_added_to_hass(self):
-        """Restore last state on HA startup."""
         last_state = await self.async_get_last_state()
         if last_state and last_state.state not in (None, "unknown", "unavailable"):
             try:
@@ -257,4 +267,3 @@ class EnvertechPeakTodaySensor(RestoreEntity, SensorEntity):
         self.async_on_remove(
             self.coordinator.async_add_listener(self.async_write_ha_state)
         )
-
