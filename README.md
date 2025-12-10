@@ -21,14 +21,17 @@ A custom Home Assistant integration to retrieve real-time data from the Envertec
 
 ## Installation
 
-### 🧰 Via HACS (recommended)
-1. In HACS, go to **Integrations** → three dots menu → **Custom repositories**.
-2. Add this repository:  
-   `https://github.com/jimmybonesde/envertech_solar`
-3. Search for **Envertech Solar** in HACS and install.
-4. Restart Home Assistant.
-5. Go to **Settings → Devices & Services → + Add Integration**, search for "Envertech Solar".
-6. Enter your **Station ID** from `envertecportal.com`.
+### 🧰 Installation (HACS – Official)
+1. Go to HACS → Integrations
+2. Click Explore & Download Repositories
+3. Search for Envertech Solar
+4. Install the integration
+5. Restart Home Assistant
+6. Go to Settings → Devices & Services → + Add Integration
+7. Search for Envertech Solar
+8. Enter your Station ID from `envertecportal.com`.
+
+💡 Custom repository is no longer needed!
 
 > 💡 You can find your station ID in the browser URL after clicking one of your solar panels:  
 > `https://www.envertecportal.com/terminal/systemhistory/03GFF6E15154525DA16901EC7A4541G1?sn=3014511`  
