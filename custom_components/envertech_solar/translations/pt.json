@@ -1,0 +1,13 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configuração Envertech",
+        "description": "Digite seu ID da estação Envertech.\n\n💡 Você pode encontrar seu ID da estação na URL após clicar em um dos seus painéis solares em envertecportal.com:\nhttps://www.envertecportal.com/terminal/systemhistory/YOUR_ID?sn=...\nA sequência 'YOUR_ID' é o seu ID da estação.",
+        "data": {
+          "station_id": "ID da estação"
+        }
+      }
+    }
+  }
+}
