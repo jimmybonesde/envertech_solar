@@ -1,0 +1,13 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Envertech 设置",
+        "description": "输入你的 Envertech 站点 ID。\n\n💡 你可以在点击 envertecportal.com 上的某个太阳能面板后，在浏览器 URL 中找到你的站点 ID：\nhttps://www.envertecportal.com/terminal/systemhistory/YOUR_ID?sn=...\n字符串 'YOUR_ID' 就是你的站点 ID。",
+        "data": {
+          "station_id": "站点 ID"
+        }
+      }
+    }
+  }
+}
