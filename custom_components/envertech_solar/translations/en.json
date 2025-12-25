@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Envertech Setup",
-        "description": "Enter your Envertech Station ID",
+        "description": "Enter your Envertech Station ID.\n\n💡 You can find your station ID in the URL after clicking one of your solar panels on envertecportal.com:\nhttps://www.envertecportal.com/terminal/systemhistory/YOUR_ID?sn=...\nThe string 'YOUR_ID' is your station ID.",
         "data": {
           "station_id": "Station ID"
         }
