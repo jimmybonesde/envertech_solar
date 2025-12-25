@@ -11,6 +11,8 @@ A custom Home Assistant integration to retrieve real-time data from the Envertec
 - Live solar power in watts
 - Daily Peak Power (calculated from real-time power measurements)
 - All-Time Peak Power from Envertech API
+- Multi-language UI support (English, German, Dutch, Portuguese, Polish, Russian, Chinese)
+- Configurable update interval via Home Assistant UI (Options Flow)
 - Installed capacity (kWp)
 - Inverter model information
 - Daily, monthly, yearly, and total energy in kWh
@@ -32,6 +34,7 @@ A custom Home Assistant integration to retrieve real-time data from the Envertec
 8. Enter your Station ID from `envertecportal.com`.
 
 💡 Custom repository is no longer needed!
+💡 After installation, you can set the data update interval in the integration options (via the ⚙️ gear icon in HA UI).
 
 > 💡 You can find your station ID in the browser URL after clicking one of your solar panels:  
 > `https://www.envertecportal.com/terminal/systemhistory/03GFF6E15154525DA16901EC7A4541G1?sn=3014511`  
@@ -83,7 +86,8 @@ To set up the **Envertech Solar Integration**, you need your **Station ID**.
 ### ⚡ Sensor Tips
 - **`Power`**: Real-time solar output in watts.  
 - **`UnitEToday`, `UnitEMonth`, `UnitEYear`, `UnitETotal`**: Cumulative energy in kWh – ideal for history cards.  
-- **`peak_power_today`**: Updates dynamically throughout the day.  
+- **`peak_power_today`**: Updates dynamically and persists across restarts.
+- **Update Interval**: Can be set in the integration options in Home Assistant (default: 30 sec, configurable 10–3600 sec).
 - **`strpeakpower`**: Retrieved from the Envertech API; may not update in real-time.
 
 ### ❗ Common Issues
