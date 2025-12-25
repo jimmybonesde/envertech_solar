@@ -1,0 +1,13 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Настройка Envertech",
+        "description": "Введите ID вашей станции Envertech.\n\n💡 Вы можете найти ID станции в URL после нажатия на одну из ваших солнечных панелей на envertecportal.com:\nhttps://www.envertecportal.com/terminal/systemhistory/YOUR_ID?sn=...\nСтрока 'YOUR_ID' — это ваш ID станции.",
+        "data": {
+          "station_id": "ID станции"
+        }
+      }
+    }
+  }
+}
