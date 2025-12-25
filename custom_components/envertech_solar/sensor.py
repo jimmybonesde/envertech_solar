@@ -122,7 +122,7 @@ class EnvertechSensor(SensorEntity):
             return None
 
         # Sensoren, die als String angezeigt werden sollen
-        if self.sensor_key in ("UnitCapacity", "StrPeakPower", "InvModel1"):
+        if self.sensor_key in ("UnitCapacity", "StrPeakPower", "InvModel1", "CreateTime"):
             return val
 
         if isinstance(val, str):
