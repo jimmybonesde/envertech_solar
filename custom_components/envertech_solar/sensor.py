@@ -19,6 +19,7 @@ MANUFACTURER = "JimmyBones"
 
 
 async def fetch_data(station_id):
+    """Ruft die aktuellen Daten von der Envertech API ab."""
     params = {"stationID": station_id}
     async with aiohttp.ClientSession() as session:
         try:
@@ -32,12 +33,14 @@ async def fetch_data(station_id):
 
 
 class EnvertechDataUpdateCoordinator(DataUpdateCoordinator):
-    def __init__(self, hass, station_id):
+    """Coordinator für Envertech-Solar-Daten."""
+
+    def __init__(self, hass: HomeAssistant, station_id: str, update_interval: int = 30):
         super().__init__(
             hass,
             _LOGGER,
             name="Envertech Solar Data Coordinator",
-            update_interval=timedelta(seconds=30),
+            update_interval=timedelta(seconds=update_interval),
         )
         self.station_id = station_id
 
@@ -45,9 +48,14 @@ class EnvertechDataUpdateCoordinator(DataUpdateCoordinator):
         return await fetch_data(self.station_id)
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback):
+async def async_setup_entry(
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+):
+    """Setzt die Sensoren über einen ConfigEntry auf."""
     station_id = entry.data["station_id"]
-    coordinator = EnvertechDataUpdateCoordinator(hass, station_id)
+    update_interval = entry.options.get("update_interval", 30)
+
+    coordinator = EnvertechDataUpdateCoordinator(hass, station_id, update_interval)
     await coordinator.async_config_entry_first_refresh()
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
@@ -71,13 +79,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
         for key, name, unit, icon in sensors
     ]
 
-    # Tagespeak-Sensor mit Persistenz hinzufügen
+    # Peak-Power-Sensor hinzufügen
     entities.append(EnvertechPeakTodaySensor(coordinator, station_id))
 
     async_add_entities(entities)
 
 
 class EnvertechSensor(SensorEntity):
+    """Einzelner Envertech-Sensor."""
+
     def __init__(self, coordinator, station_id, sensor_key, name, unit, icon=None):
         self.coordinator = coordinator
         self.station_id = station_id
@@ -92,9 +102,6 @@ class EnvertechSensor(SensorEntity):
         elif unit == "W":
             self._attr_device_class = "power"
             self._attr_state_class = "measurement"
-        else:
-            self._attr_device_class = None
-            self._attr_state_class = None
 
     @property
     def unique_id(self):
@@ -108,7 +115,7 @@ class EnvertechSensor(SensorEntity):
             manufacturer=MANUFACTURER,
             model="Envertech API",
             entry_type="service",
-            configuration_url="https://github.com/jimmybonesde/envertech_solar"
+            configuration_url="https://github.com/jimmybonesde/envertech_solar",
         )
 
     @property
@@ -121,7 +128,6 @@ class EnvertechSensor(SensorEntity):
         if val is None:
             return None
 
-        # Sensoren, die als String angezeigt werden sollen
         if self.sensor_key in ("UnitCapacity", "StrPeakPower", "InvModel1", "CreateTime"):
             return val
 
@@ -129,17 +135,14 @@ class EnvertechSensor(SensorEntity):
             try:
                 cleaned = val.replace(",", ".").strip()
 
-                # Energieeinheiten
                 if "MWh" in cleaned:
-                    number = float(cleaned.replace("MWh", "").strip()) * 1000  # MWh -> kWh
+                    number = float(cleaned.replace("MWh", "").strip()) * 1000
                 elif "kWh" in cleaned:
                     number = float(cleaned.replace("kWh", "").strip())
-                # Leistungs-Einheiten
                 elif "kW" in cleaned:
-                    number = float(cleaned.replace("kW", "").strip()) * 1000  # kW -> W
+                    number = float(cleaned.replace("kW", "").strip()) * 1000
                 elif "W" in cleaned:
                     number = float(cleaned.replace("W", "").strip())
-                # Sonstige Einheiten
                 elif "€" in cleaned:
                     number = float(cleaned.replace("€", "").strip())
                 elif "ton" in cleaned:
@@ -147,12 +150,10 @@ class EnvertechSensor(SensorEntity):
                 else:
                     number = float(cleaned)
 
-                # Speziell für Total/Yearly Energy in W umrechnen, falls nötig
                 if self._attr_native_unit_of_measurement == "W" and self.sensor_key in ("UnitETotal", "UnitEYear"):
                     number *= 1000
 
                 return number
-
             except Exception as e:
                 _LOGGER.warning(
                     "Could not convert value '%s' for sensor '%s': %s", val, self.sensor_key, e
@@ -171,7 +172,7 @@ class EnvertechSensor(SensorEntity):
 
 
 class EnvertechPeakTodaySensor(RestoreEntity, SensorEntity):
-    """Daily peak power calculated from current power values with persistence."""
+    """Berechnet die Tages-Peak-Leistung und speichert sie persistent."""
 
     def __init__(self, coordinator, station_id):
         self.coordinator = coordinator
@@ -198,7 +199,7 @@ class EnvertechPeakTodaySensor(RestoreEntity, SensorEntity):
             manufacturer=MANUFACTURER,
             model="Envertech API",
             entry_type="service",
-            configuration_url="https://github.com/jimmybonesde/envertech_solar"
+            configuration_url="https://github.com/jimmybonesde/envertech_solar",
         )
 
     @property
@@ -210,7 +211,7 @@ class EnvertechPeakTodaySensor(RestoreEntity, SensorEntity):
         if self._peak_time:
             return {
                 "peak_time": self._peak_time.strftime("%H:%M:%S"),
-                "last_reset": self._last_reset_date.isoformat() if self._last_reset_date else None
+                "last_reset": self._last_reset_date.isoformat() if self._last_reset_date else None,
             }
         return {"peak_time": None, "last_reset": None}
 
@@ -243,6 +244,7 @@ class EnvertechPeakTodaySensor(RestoreEntity, SensorEntity):
             self._peak_time = datetime.now()
 
     async def async_added_to_hass(self):
+        """Restore last state on HA startup."""
         last_state = await self.async_get_last_state()
         if last_state and last_state.state not in (None, "unknown", "unavailable"):
             try:
