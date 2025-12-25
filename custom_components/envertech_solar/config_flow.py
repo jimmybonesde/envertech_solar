@@ -2,14 +2,18 @@ from homeassistant import config_entries
 import voluptuous as vol
 from .const import DOMAIN
 
-DEFAULT_UPDATE_INTERVAL = 60
+DEFAULT_UPDATE_INTERVAL = 30  # seconds
 
 class EnvertechConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
 
     async def async_step_user(self, user_input=None):
         if user_input is not None:
-            return self.async_create_entry(title="Envertech Solar", data=user_input)
+            return self.async_create_entry(
+                title="Envertech Solar",
+                data=user_input,
+                options={"update_interval": DEFAULT_UPDATE_INTERVAL}
+            )
 
         return self.async_show_form(
             step_id="user",
@@ -18,7 +22,10 @@ class EnvertechConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             }),
         )
 
+
 class EnvertechOptionsFlowHandler(config_entries.OptionsFlow):
+    """OptionsFlow für update_interval."""
+
     def __init__(self, config_entry):
         self.config_entry = config_entry
 
@@ -31,10 +38,13 @@ class EnvertechOptionsFlowHandler(config_entries.OptionsFlow):
             data_schema=vol.Schema({
                 vol.Required(
                     "update_interval",
-                    default=self.config_entry.options.get("update_interval", DEFAULT_UPDATE_INTERVAL),
-                ): vol.All(vol.Coerce(int), vol.Range(min=30, max=3600)),
+                    default=self.config_entry.options.get(
+                        "update_interval", DEFAULT_UPDATE_INTERVAL
+                    )
+                ): vol.All(vol.Coerce(int), vol.Range(min=10, max=3600))
             }),
         )
+
 
 def async_get_options_flow(config_entry):
     return EnvertechOptionsFlowHandler(config_entry)
