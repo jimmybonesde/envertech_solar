@@ -128,39 +128,39 @@ class EnvertechSensor(SensorEntity):
         if val is None:
             return None
 
-        if self.sensor_key in ("UnitCapacity", "StrPeakPower", "InvModel1", "CreateTime"):
-            return val
-
-        if isinstance(val, str):
+        # Spezieller Fall: CreateTime als dd/mm/yyyy
+        if self.sensor_key == "CreateTime":
             try:
-                cleaned = val.replace(",", ".").strip()
-
-                if "MWh" in cleaned:
-                    number = float(cleaned.replace("MWh", "").strip()) * 1000
-                elif "kWh" in cleaned:
-                    number = float(cleaned.replace("kWh", "").strip())
-                elif "kW" in cleaned:
-                    number = float(cleaned.replace("kW", "").strip()) * 1000
-                elif "W" in cleaned:
-                    number = float(cleaned.replace("W", "").strip())
-                elif "€" in cleaned:
-                    number = float(cleaned.replace("€", "").strip())
-                elif "ton" in cleaned:
-                    number = float(cleaned.replace("ton", "").strip())
-                else:
-                    number = float(cleaned)
-
-                if self._attr_native_unit_of_measurement == "W" and self.sensor_key in ("UnitETotal", "UnitEYear"):
-                    number *= 1000
-
-                return number
+                return val.split("GMT")[0].strip()
             except Exception as e:
-                _LOGGER.warning(
-                    "Could not convert value '%s' for sensor '%s': %s", val, self.sensor_key, e
-                )
+                _LOGGER.warning("Could not parse CreateTime '%s': %s", val, e)
                 return val
 
-        return val
+        # Sensoren, die String bleiben sollen
+        if self.sensor_key in ("UnitCapacity", "StrPeakPower", "InvModel1"):
+            return val
+
+        # Alle anderen als Float
+        try:
+            cleaned = str(val).replace(",", ".").strip()
+
+            units = {"MWh": 1000, "kWh": 1, "kW": 1000, "W": 1, "€": 1, "ton": 1}
+            for unit, factor in units.items():
+                if unit in cleaned:
+                    number = float(cleaned.replace(unit, "").strip()) * factor
+                    break
+            else:
+                number = float(cleaned)
+
+            if self._attr_native_unit_of_measurement == "W" and self.sensor_key in ("UnitETotal", "UnitEYear"):
+                number *= 1000
+
+            return number
+        except Exception as e:
+            _LOGGER.warning(
+                "Could not convert value '%s' for sensor '%s': %s", val, self.sensor_key, e
+            )
+            return val
 
     async def async_update(self):
         await self.coordinator.async_request_refresh()
