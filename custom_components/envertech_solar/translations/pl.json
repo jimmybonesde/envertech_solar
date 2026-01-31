@@ -3,9 +3,9 @@
     "step": {
       "user": {
         "title": "Konfiguracja Envertech",
-        "description": "Wprowadź ID swojej stacji Envertech.\n\n💡 ID stacji znajdziesz w URL po kliknięciu w jeden ze swoich paneli słonecznych na envertecportal.com:\nhttps://www.envertecportal.com/terminal/systemhistory/YOUR_ID?sn=...\nCiąg 'YOUR_ID' to Twoje ID stacji.",
+        "description": "Wprowadź swój identyfikator stacji Envertech.\n\n💡 Identyfikator stacji znajdziesz w adresie URL po kliknięciu w jeden z Twoich paneli słonecznych w portalu Envertech:\n{example_url}\nCiąg znaków '{id_placeholder}' to Twój identyfikator stacji.",
         "data": {
-          "station_id": "ID stacji"
+          "station_id": "Identyfikator stacji"
         }
       }
     }
