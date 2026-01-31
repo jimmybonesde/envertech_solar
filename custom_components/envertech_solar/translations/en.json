@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Envertech Setup",
-        "description": "Enter your Envertech Station ID.\n\n💡 You can find your station ID in the URL after clicking one of your solar panels in the Envertech portal:\n{example_url}\nThe string '{id_placeholder}' is your station ID.",
+        "description": "Enter your Envertech Station ID.\n\n💡 You can find your station ID in the URL after clicking one of your solar panels in the Envertech portal:\n{example_url}\nThe string {id_placeholder} is your station ID.",
         "data": {
           "station_id": "Station ID"
         }
