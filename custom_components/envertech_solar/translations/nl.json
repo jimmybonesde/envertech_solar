@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Envertech Instellen",
-        "description": "Voer je Envertech station-ID in.\n\n💡 Je vindt je station-ID in de URL nadat je op een van je zonnepanelen klikt in het Envertech-portaal:\n{example_url}\nDe tekenreeks '{id_placeholder}' is je station-ID.",
+        "description": "Voer je Envertech station-ID in.\n\n💡 Je vindt je station-ID in de URL nadat je op een van je zonnepanelen klikt in het Envertech-portaal:\n{example_url}\nDe tekenreeks {id_placeholder} is je station-ID.",
         "data": {
           "station_id": "Station-ID"
         }
