@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Configurazione Envertech",
-        "description": "Inserisci il tuo ID stazione Envertech.\n\n💡 Puoi trovare il tuo ID stazione nell'URL dopo aver cliccato su uno dei tuoi pannelli solari su envertecportal.com:\nhttps://www.envertecportal.com/terminal/systemhistory/YOUR_ID?sn=...\nLa stringa 'YOUR_ID' è il tuo ID stazione.",
+        "description": "Inserisci il tuo ID stazione Envertech.\n\n💡 Puoi trovare il tuo ID stazione nell'URL dopo aver cliccato su uno dei tuoi pannelli solari sul portale Envertech:\n{example_url}\nLa stringa '{id_placeholder}' è il tuo ID stazione.",
         "data": {
           "station_id": "ID stazione"
         }
