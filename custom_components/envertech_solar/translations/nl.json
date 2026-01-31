@@ -2,8 +2,8 @@
   "config": {
     "step": {
       "user": {
-        "title": "Envertech-installatie",
-        "description": "Voer je Envertech-station-ID in.\n\n💡 Je kunt je station-ID vinden in de URL nadat je op een van je zonnepanelen hebt geklikt op envertecportal.com:\nhttps://www.envertecportal.com/terminal/systemhistory/YOUR_ID?sn=...\nDe tekenreeks 'YOUR_ID' is je station-ID.",
+        "title": "Envertech Instellen",
+        "description": "Voer je Envertech station-ID in.\n\n💡 Je vindt je station-ID in de URL nadat je op een van je zonnepanelen klikt in het Envertech-portaal:\n{example_url}\nDe tekenreeks '{id_placeholder}' is je station-ID.",
         "data": {
           "station_id": "Station-ID"
         }
