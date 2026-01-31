@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Envertech 设置",
-        "description": "请输入您的 Envertech 站点 ID。\n\n💡 您可以在 Envertech 门户中点击其中一个太阳能板后，在 URL 中找到您的站点 ID：\n{example_url}\n字符串 '{id_placeholder}' 就是您的站点 ID。",
+        "description": "请输入您的 Envertech 站点 ID。\n\n💡 您可以在 Envertech 门户中点击其中一个太阳能板后，在 URL 中找到您的站点 ID：\n{example_url}\n字符串 {id_placeholder} 就是您的站点 ID。",
         "data": {
           "station_id": "站点 ID"
         }
