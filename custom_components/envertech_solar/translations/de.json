@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Envertech Einrichtung",
-        "description": "Gib deine Envertech Station-ID ein.\n\n💡 Du findest die Station-ID in der URL des Envertec-Portals, nachdem du auf eines deiner Solarpanels klickst:\nhttps://www.envertecportal.com/terminal/systemhistory/DEINE_ID?sn=...\nDie Zeichenkette 'DEINE_ID' ist deine Station-ID.",
+        "description": "Gib deine Envertech Stations-ID ein.\n\n💡 Du findest die Stations-ID in der URL, nachdem du im Envertech-Portal auf eines deiner Solarpanels klickst:\n{example_url}\nDie Zeichenkette '{id_placeholder}' ist deine Stations-ID.",
         "data": {
           "station_id": "Stations-ID"
         }
