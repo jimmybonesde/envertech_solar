@@ -1,4 +1,4 @@
-# Envertech Solar Integration for Home Assistant ☀️
+# Envertech Solar Integration for Home Assistant ☀️  ![Badge](https://hitscounter.dev/api/hit?url=https%3A%2F%2Fgithub.com%2Fjimmybonesde%2Fenvertech_solar&label=Envertech&icon=github&color=%23198754&message=&style=flat&tz=UTC)
 
 <img width="341" height="259" alt="logo" src="https://github.com/user-attachments/assets/d396989c-63ab-412f-ad09-fa1e0db7192d" />
 
