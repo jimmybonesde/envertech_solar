@@ -1,5 +1,8 @@
 # Envertech Solar Integration for Home Assistant ☀️ 
 ![Badge](https://hitscounter.dev/api/hit?url=https%3A%2F%2Fgithub.com%2Fjimmybonesde%2Fenvertech_solar&label=Envertech&icon=github&color=%23198754&message=&style=flat&tz=UTC)
+[![GitHub Release](https://img.shields.io/github/v/release/jimmybonesde/Envertech_solar?style=for-the-badge&logo=github&color=green)](https://github.com/jimmybonesde/Envertech_solar/releases)
+[![GitHub Stars](https://img.shields.io/github/stars/jimmybonesde/Envertech_solar?style=for-the-badge&logo=github&color=yellow)](https://github.com/jimmybonesde/Envertech_solar/stargazers)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 <img width="341" height="259" alt="logo" src="https://github.com/user-attachments/assets/d396989c-63ab-412f-ad09-fa1e0db7192d" />
 
