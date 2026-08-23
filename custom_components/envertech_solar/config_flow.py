@@ -1,13 +1,21 @@
 from homeassistant import config_entries
+from homeassistant.core import callback
 import voluptuous as vol
 
 from .const import DOMAIN
 
-DEFAULT_UPDATE_INTERVAL = 30
+DEFAULT_UPDATE_INTERVAL = 10
 
 
 class EnvertechConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(
+        config_entry: config_entries.ConfigEntry,
+    ) -> EnvertechOptionsFlowHandler:
+        return EnvertechOptionsFlowHandler()
 
     async def async_step_user(self, user_input=None):
         errors = {}
@@ -36,9 +44,6 @@ class EnvertechConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 class EnvertechOptionsFlowHandler(config_entries.OptionsFlow):
     """Options flow handler for update_interval."""
 
-    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
-        self.config_entry = config_entry
-
     async def async_step_init(self, user_input=None):
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
@@ -56,9 +61,3 @@ class EnvertechOptionsFlowHandler(config_entries.OptionsFlow):
                 }
             ),
         )
-
-
-def async_get_options_flow(
-    config_entry: config_entries.ConfigEntry,
-) -> EnvertechOptionsFlowHandler:
-    return EnvertechOptionsFlowHandler(config_entry)
