@@ -4,7 +4,7 @@ import voluptuous as vol
 
 from .const import DOMAIN
 
-DEFAULT_UPDATE_INTERVAL = 10
+DEFAULT_UPDATE_INTERVAL = 30
 
 
 class EnvertechConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
