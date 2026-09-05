@@ -18,10 +18,33 @@ _LOGGER = logging.getLogger(__name__)
 API_URL = "https://www.envertecportal.com/ApiStations/getStationInfo"
 MANUFACTURER = "JimmyBones"
 
+UNITS = {
+    "MWh": 1000,
+    "kWh": 1,
+    "kKh": 1,  # Envertech API typo; treat as kWh
+    "kW": 1000,
+    "W": 1,
+    "€": 1,
+    "zł": 1,
+    "ton": 1,
+}
+
+
+def parse_numeric_value(value):
+    """Convert Envertech API values with units to a numeric value."""
+    cleaned = str(value).replace(",", ".").replace("\xa0", " ").strip()
+
+    for unit, factor in UNITS.items():
+        if unit in cleaned:
+            return float(cleaned.replace(unit, "").strip()) * factor
+
+    return float(cleaned)
+
 
 async def fetch_data(station_id):
     """Fetch current data from the Envertech API."""
     params = {"stationID": station_id}
+
     async with aiohttp.ClientSession() as session:
         try:
             with async_timeout.timeout(10):
@@ -128,7 +151,11 @@ class EnvertechSensor(SensorEntity):
             value = str(
                 self.coordinator.data.get("Data", {}).get("StrIncome", "")
             ).lower()
-            return "PLN" if "zł" in value else "EUR"
+
+            if "zł" in value or "pln" in value:
+                return "PLN"
+
+            return "EUR"
 
         return self._attr_native_unit_of_measurement
 
@@ -145,7 +172,7 @@ class EnvertechSensor(SensorEntity):
         if self.sensor_key == "CreateTime":
             try:
                 return val.split("GMT")[0].strip()
-            except Exception as err:
+            except (AttributeError, TypeError) as err:
                 _LOGGER.warning("Could not parse CreateTime '%s': %s", val, err)
                 return val
 
@@ -153,26 +180,7 @@ class EnvertechSensor(SensorEntity):
             return val
 
         try:
-            cleaned = str(val).replace(",", ".").strip()
-
-            units = {
-                "MWh": 1000,
-                "kWh": 1,
-                "kW": 1000,
-                "W": 1,
-                "€": 1,
-                "zł": 1,
-                "ton": 1,
-            }
-
-            for unit, factor in units.items():
-                if unit in cleaned:
-                    number = float(cleaned.replace(unit, "").strip()) * factor
-                    break
-            else:
-                number = float(cleaned)
-
-            return number
+            return parse_numeric_value(val)
         except (TypeError, ValueError) as err:
             _LOGGER.warning(
                 "Could not convert value '%s' for sensor '%s': %s",
@@ -242,6 +250,7 @@ class EnvertechPeakTodaySensor(RestoreEntity, SensorEntity):
 
     async def async_update(self):
         await self.coordinator.async_request_refresh()
+
         data = self.coordinator.data
         if not data or "Data" not in data:
             return
@@ -251,15 +260,12 @@ class EnvertechPeakTodaySensor(RestoreEntity, SensorEntity):
             return
 
         try:
-            cleaned = str(val).replace(",", ".").replace("W", "").replace("kW", "").strip()
-            number = float(cleaned)
-
-            if "kW" in str(val):
-                number *= 1000
+            number = parse_numeric_value(val)
         except (TypeError, ValueError):
             return
 
         today = datetime.now().date()
+
         if self._last_reset_date != today:
             self._peak_today = 0
             self._peak_time = None
