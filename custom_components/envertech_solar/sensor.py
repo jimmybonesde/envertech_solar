@@ -148,7 +148,11 @@ class EnvertechSensor(CoordinatorEntity, SensorEntity):
 
         if unit == "kWh":
             self._attr_device_class = SensorDeviceClass.ENERGY
-            self._attr_state_class = SensorStateClass.TOTAL_INCREASING
+            # Month/year totals reset periodically — TOTAL_INCREASING would warn.
+            if sensor_key in ("UnitEMonth", "UnitEYear"):
+                self._attr_state_class = SensorStateClass.MEASUREMENT
+            else:
+                self._attr_state_class = SensorStateClass.TOTAL_INCREASING
         elif unit == "W":
             self._attr_device_class = SensorDeviceClass.POWER
             self._attr_state_class = SensorStateClass.MEASUREMENT
