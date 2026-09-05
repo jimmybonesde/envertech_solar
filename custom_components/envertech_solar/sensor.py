@@ -1,15 +1,16 @@
 import logging
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
+
 import aiohttp
 import async_timeout
 
-from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from homeassistant.helpers.device_registry import DeviceInfo
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.restore_state import RestoreEntity
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import DOMAIN
 
@@ -19,7 +20,7 @@ MANUFACTURER = "JimmyBones"
 
 
 async def fetch_data(station_id):
-    """Ruft die aktuellen Daten von der Envertech API ab."""
+    """Fetch current data from the Envertech API."""
     params = {"stationID": station_id}
     async with aiohttp.ClientSession() as session:
         try:
@@ -33,7 +34,7 @@ async def fetch_data(station_id):
 
 
 class EnvertechDataUpdateCoordinator(DataUpdateCoordinator):
-    """Coordinator für Envertech-Solar-Daten."""
+    """Coordinator for Envertech Solar data."""
 
     def __init__(self, hass: HomeAssistant, station_id: str, update_interval: int = 30):
         super().__init__(
@@ -49,9 +50,11 @@ class EnvertechDataUpdateCoordinator(DataUpdateCoordinator):
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
 ):
-    """Setzt die Sensoren über einen ConfigEntry auf."""
+    """Set up Envertech sensors from a config entry."""
     station_id = entry.data["station_id"]
     update_interval = entry.options.get("update_interval", 30)
 
@@ -69,7 +72,7 @@ async def async_setup_entry(
         ("UnitETotal", "Total Energy", "kWh", "mdi:solar-power"),
         ("InvModel1", "Inverter Model", None, "mdi:solar-power"),
         ("StrPeakPower", "All-Time Peak Power", None, "mdi:flash"),
-        ("StrIncome", "Income", "€", "mdi:cash"),
+        ("StrIncome", "Income", "EUR", "mdi:cash"),
         ("StrCO2", "Carbon Offset", "ton", "mdi:molecule-co2"),
         ("CreateTime", "Start Date", None, "mdi:view-day"),
     ]
@@ -79,14 +82,12 @@ async def async_setup_entry(
         for key, name, unit, icon in sensors
     ]
 
-    # Peak-Power-Sensor hinzufügen
     entities.append(EnvertechPeakTodaySensor(coordinator, station_id))
-
     async_add_entities(entities)
 
 
 class EnvertechSensor(SensorEntity):
-    """Einzelner Envertech-Sensor."""
+    """Single Envertech sensor."""
 
     def __init__(self, coordinator, station_id, sensor_key, name, unit, icon=None):
         self.coordinator = coordinator
@@ -97,11 +98,13 @@ class EnvertechSensor(SensorEntity):
         self._attr_icon = icon
 
         if unit == "kWh":
-            self._attr_device_class = "energy"
+            self._attr_device_class = SensorDeviceClass.ENERGY
             self._attr_state_class = "total_increasing"
         elif unit == "W":
-            self._attr_device_class = "power"
+            self._attr_device_class = SensorDeviceClass.POWER
             self._attr_state_class = "measurement"
+        elif sensor_key == "StrIncome":
+            self._attr_device_class = SensorDeviceClass.MONETARY
 
     @property
     def unique_id(self):
@@ -119,6 +122,17 @@ class EnvertechSensor(SensorEntity):
         )
 
     @property
+    def native_unit_of_measurement(self):
+        """Return the detected ISO 4217 currency for the income sensor."""
+        if self.sensor_key == "StrIncome":
+            value = str(
+                self.coordinator.data.get("Data", {}).get("StrIncome", "")
+            ).lower()
+            return "PLN" if "zł" in value else "EUR"
+
+        return self._attr_native_unit_of_measurement
+
+    @property
     def native_value(self):
         data = self.coordinator.data
         if not data or "Data" not in data:
@@ -128,23 +142,29 @@ class EnvertechSensor(SensorEntity):
         if val is None:
             return None
 
-        # Spezieller Fall: CreateTime als dd/mm/yyyy
         if self.sensor_key == "CreateTime":
             try:
                 return val.split("GMT")[0].strip()
-            except Exception as e:
-                _LOGGER.warning("Could not parse CreateTime '%s': %s", val, e)
+            except Exception as err:
+                _LOGGER.warning("Could not parse CreateTime '%s': %s", val, err)
                 return val
 
-        # Sensoren, die String bleiben sollen
         if self.sensor_key in ("UnitCapacity", "StrPeakPower", "InvModel1"):
             return val
 
-        # Alle anderen als Float
         try:
             cleaned = str(val).replace(",", ".").strip()
 
-            units = {"MWh": 1000, "kWh": 1, "kW": 1000, "W": 1, "€": 1, "ton": 1}
+            units = {
+                "MWh": 1000,
+                "kWh": 1,
+                "kW": 1000,
+                "W": 1,
+                "€": 1,
+                "zł": 1,
+                "ton": 1,
+            }
+
             for unit, factor in units.items():
                 if unit in cleaned:
                     number = float(cleaned.replace(unit, "").strip()) * factor
@@ -152,15 +172,15 @@ class EnvertechSensor(SensorEntity):
             else:
                 number = float(cleaned)
 
-            if self._attr_native_unit_of_measurement == "W" and self.sensor_key in ("UnitETotal", "UnitEYear"):
-                number *= 1000
-
             return number
-        except Exception as e:
+        except (TypeError, ValueError) as err:
             _LOGGER.warning(
-                "Could not convert value '%s' for sensor '%s': %s", val, self.sensor_key, e
+                "Could not convert value '%s' for sensor '%s': %s",
+                val,
+                self.sensor_key,
+                err,
             )
-            return val
+            return None
 
     async def async_update(self):
         await self.coordinator.async_request_refresh()
@@ -172,7 +192,7 @@ class EnvertechSensor(SensorEntity):
 
 
 class EnvertechPeakTodaySensor(RestoreEntity, SensorEntity):
-    """Berechnet die Tages-Peak-Leistung und speichert sie persistent."""
+    """Calculate and persist daily peak power."""
 
     def __init__(self, coordinator, station_id):
         self.coordinator = coordinator
@@ -180,7 +200,7 @@ class EnvertechPeakTodaySensor(RestoreEntity, SensorEntity):
         self._attr_name = "Daily Peak Power"
         self._attr_native_unit_of_measurement = "W"
         self._attr_icon = "mdi:flash"
-        self._attr_device_class = "power"
+        self._attr_device_class = SensorDeviceClass.POWER
         self._attr_state_class = "measurement"
 
         self._peak_today = 0
@@ -211,8 +231,13 @@ class EnvertechPeakTodaySensor(RestoreEntity, SensorEntity):
         if self._peak_time:
             return {
                 "peak_time": self._peak_time.strftime("%H:%M:%S"),
-                "last_reset": self._last_reset_date.isoformat() if self._last_reset_date else None,
+                "last_reset": (
+                    self._last_reset_date.isoformat()
+                    if self._last_reset_date
+                    else None
+                ),
             }
+
         return {"peak_time": None, "last_reset": None}
 
     async def async_update(self):
@@ -228,9 +253,10 @@ class EnvertechPeakTodaySensor(RestoreEntity, SensorEntity):
         try:
             cleaned = str(val).replace(",", ".").replace("W", "").replace("kW", "").strip()
             number = float(cleaned)
+
             if "kW" in str(val):
                 number *= 1000
-        except Exception:
+        except (TypeError, ValueError):
             return
 
         today = datetime.now().date()
@@ -244,8 +270,9 @@ class EnvertechPeakTodaySensor(RestoreEntity, SensorEntity):
             self._peak_time = datetime.now()
 
     async def async_added_to_hass(self):
-        """Restore last state on HA startup."""
+        """Restore last state on Home Assistant startup."""
         last_state = await self.async_get_last_state()
+
         if last_state and last_state.state not in (None, "unknown", "unavailable"):
             try:
                 self._peak_today = float(last_state.state)
@@ -256,14 +283,14 @@ class EnvertechPeakTodaySensor(RestoreEntity, SensorEntity):
             if peak_time_attr:
                 try:
                     self._peak_time = datetime.strptime(peak_time_attr, "%H:%M:%S")
-                except Exception:
+                except ValueError:
                     self._peak_time = None
 
             last_reset_attr = last_state.attributes.get("last_reset")
             if last_reset_attr:
                 try:
                     self._last_reset_date = datetime.fromisoformat(last_reset_attr).date()
-                except Exception:
+                except ValueError:
                     self._last_reset_date = None
 
         self.async_on_remove(
