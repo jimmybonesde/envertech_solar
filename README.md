@@ -1,7 +1,9 @@
-# Envertech Solar Integration for Home Assistant ☀️ 
+# Envertech Solar Integration for Home Assistant ☀️
+
 [![GitHub Release](https://img.shields.io/github/v/release/jimmybonesde/Envertech_solar?style=for-the-badge&logo=github&color=green)](https://github.com/jimmybonesde/Envertech_solar/releases)
 [![GitHub Stars](https://img.shields.io/github/stars/jimmybonesde/Envertech_solar?style=for-the-badge&logo=github&color=yellow)](https://github.com/jimmybonesde/Envertech_solar/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+
 
 <img width="341" height="259" alt="logo" src="https://github.com/user-attachments/assets/d396989c-63ab-412f-ad09-fa1e0db7192d" />
 
@@ -73,6 +75,7 @@ A custom Home Assistant integration to retrieve real-time data from the Envertec
 ## Credits
 
 Created with love for solar nerds by JimmyBones
+🌐 **[JimmyBones.de – Private Homepage](https://www.JimmyBones.de)**
 
 ## 💡 Tips & FAQ
 
