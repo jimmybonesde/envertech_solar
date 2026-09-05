@@ -1,64 +1,85 @@
+"""Envertech Solar sensor platform."""
+
+from __future__ import annotations
+
+import asyncio
 import logging
-from datetime import timedelta, datetime
+from collections.abc import Mapping
+from datetime import timedelta
+from typing import Any
+
 import aiohttp
-import async_timeout
 
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.device_registry import DeviceInfo
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.restore_state import RestoreEntity
+from homeassistant.helpers.update_coordinator import (
+    CoordinatorEntity,
+    DataUpdateCoordinator,
+    UpdateFailed,
+)
+from homeassistant.util import dt as dt_util
 
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
+
 API_URL = "https://www.envertecportal.com/ApiStations/getStationInfo"
-MANUFACTURER = "JimmyBones"
+MANUFACTURER = "Envertech"
+DEFAULT_UPDATE_INTERVAL = 30
 
 
-async def fetch_data(station_id):
-    """Ruft die aktuellen Daten von der Envertech API ab."""
-    params = {"stationID": station_id}
-    async with aiohttp.ClientSession() as session:
-        try:
-            with async_timeout.timeout(10):
-                async with session.post(API_URL, params=params) as response:
-                    response.raise_for_status()
-                    return await response.json()
-        except Exception as err:
-            _LOGGER.error("Error fetching data from Envertech: %s", err)
-            raise
+async def fetch_data(hass: HomeAssistant, station_id: str) -> Mapping[str, Any]:
+    """Fetch the current data from the Envertech API."""
+    session = async_get_clientsession(hass)
+
+    async with session.post(
+        API_URL,
+        params={"stationID": station_id},
+        timeout=aiohttp.ClientTimeout(total=10),
+    ) as response:
+        response.raise_for_status()
+        data = await response.json()
+
+    if not isinstance(data, Mapping) or not isinstance(data.get("Data"), Mapping):
+        raise ValueError("Envertech API returned an unexpected response")
+
+    return data
 
 
 class EnvertechDataUpdateCoordinator(DataUpdateCoordinator):
-    """Coordinator für Envertech-Solar-Daten."""
+    """Coordinate Envertech Solar API updates."""
 
-    def __init__(self, hass: HomeAssistant, station_id: str, update_interval: int = 30):
+    def __init__(
+        self, hass: HomeAssistant, station_id: str, update_interval: int = DEFAULT_UPDATE_INTERVAL
+    ) -> None:
         super().__init__(
             hass,
             _LOGGER,
-            name="Envertech Solar Data Coordinator",
+            name="Envertech Solar",
             update_interval=timedelta(seconds=update_interval),
         )
         self.station_id = station_id
 
-    async def _async_update_data(self):
-        return await fetch_data(self.station_id)
+    async def _async_update_data(self) -> Mapping[str, Any]:
+        try:
+            return await fetch_data(self.hass, self.station_id)
+        except (aiohttp.ClientError, asyncio.TimeoutError, ValueError) as err:
+            raise UpdateFailed(f"Error communicating with Envertech: {err}") from err
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
-):
-    """Setzt die Sensoren über einen ConfigEntry auf."""
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
+    """Set up Envertech sensors from a config entry."""
+    coordinator: EnvertechDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
     station_id = entry.data["station_id"]
-    update_interval = entry.options.get("update_interval", 30)
-
-    coordinator = EnvertechDataUpdateCoordinator(hass, station_id, update_interval)
-    await coordinator.async_config_entry_first_refresh()
-
-    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
 
     sensors = [
         ("UnitCapacity", "Capacity", None, "mdi:solar-power"),
@@ -78,19 +99,44 @@ async def async_setup_entry(
         EnvertechSensor(coordinator, station_id, key, name, unit, icon)
         for key, name, unit, icon in sensors
     ]
-
-    # Peak-Power-Sensor hinzufügen
     entities.append(EnvertechPeakTodaySensor(coordinator, station_id))
-
     async_add_entities(entities)
 
 
-class EnvertechSensor(SensorEntity):
-    """Einzelner Envertech-Sensor."""
+class EnvertechEntity(CoordinatorEntity):
+    """Base entity for an Envertech station."""
 
-    def __init__(self, coordinator, station_id, sensor_key, name, unit, icon=None):
-        self.coordinator = coordinator
+    _attr_has_entity_name = True
+
+    def __init__(self, coordinator: EnvertechDataUpdateCoordinator, station_id: str) -> None:
+        super().__init__(coordinator)
         self.station_id = station_id
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return the device information."""
+        return DeviceInfo(
+            identifiers={(DOMAIN, self.station_id)},
+            name="Envertech Solar Station",
+            manufacturer=MANUFACTURER,
+            model="Envertech API",
+            configuration_url="https://github.com/jimmybonesde/envertech_solar",
+        )
+
+
+class EnvertechSensor(EnvertechEntity, SensorEntity):
+    """Represent a single Envertech sensor."""
+
+    def __init__(
+        self,
+        coordinator: EnvertechDataUpdateCoordinator,
+        station_id: str,
+        sensor_key: str,
+        name: str,
+        unit: str | None,
+        icon: str | None = None,
+    ) -> None:
+        super().__init__(coordinator, station_id)
         self.sensor_key = sensor_key
         self._attr_name = name
         self._attr_native_unit_of_measurement = unit
@@ -104,168 +150,138 @@ class EnvertechSensor(SensorEntity):
             self._attr_state_class = "measurement"
 
     @property
-    def unique_id(self):
+    def unique_id(self) -> str:
+        """Return a unique ID for the sensor."""
         return f"{DOMAIN}_{self.sensor_key.lower()}_{self.station_id}"
 
     @property
-    def device_info(self) -> DeviceInfo:
-        return DeviceInfo(
-            identifiers={(DOMAIN, self.station_id)},
-            name="Envertech Solar Station",
-            manufacturer=MANUFACTURER,
-            model="Envertech API",
-            entry_type="service",
-            configuration_url="https://github.com/jimmybonesde/envertech_solar",
-        )
-
-    @property
-    def native_value(self):
+    def native_value(self) -> Any:
+        """Return the latest value reported by the API."""
         data = self.coordinator.data
-        if not data or "Data" not in data:
+        if not data:
             return None
 
-        val = data["Data"].get(self.sensor_key)
-        if val is None:
+        value = data["Data"].get(self.sensor_key)
+        if value is None:
             return None
 
-        # Spezieller Fall: CreateTime als dd/mm/yyyy
         if self.sensor_key == "CreateTime":
-            try:
-                return val.split("GMT")[0].strip()
-            except Exception as e:
-                _LOGGER.warning("Could not parse CreateTime '%s': %s", val, e)
-                return val
+            return str(value).split("GMT", maxsplit=1)[0].strip()
 
-        # Sensoren, die String bleiben sollen
         if self.sensor_key in ("UnitCapacity", "StrPeakPower", "InvModel1"):
-            return val
+            return value
 
-        # Alle anderen als Float
-        try:
-            cleaned = str(val).replace(",", ".").strip()
-
-            units = {"MWh": 1000, "kWh": 1, "kW": 1000, "W": 1, "€": 1, "ton": 1}
-            for unit, factor in units.items():
-                if unit in cleaned:
-                    number = float(cleaned.replace(unit, "").strip()) * factor
-                    break
-            else:
-                number = float(cleaned)
-
-            if self._attr_native_unit_of_measurement == "W" and self.sensor_key in ("UnitETotal", "UnitEYear"):
-                number *= 1000
-
-            return number
-        except Exception as e:
-            _LOGGER.warning(
-                "Could not convert value '%s' for sensor '%s': %s", val, self.sensor_key, e
-            )
-            return val
-
-    async def async_update(self):
-        await self.coordinator.async_request_refresh()
-
-    async def async_added_to_hass(self):
-        self.async_on_remove(
-            self.coordinator.async_add_listener(self.async_write_ha_state)
-        )
+        return _parse_number(value, self.sensor_key)
 
 
-class EnvertechPeakTodaySensor(RestoreEntity, SensorEntity):
-    """Berechnet die Tages-Peak-Leistung und speichert sie persistent."""
+class EnvertechPeakTodaySensor(EnvertechEntity, RestoreEntity, SensorEntity):
+    """Track and persist the highest power reported during the current day."""
 
-    def __init__(self, coordinator, station_id):
-        self.coordinator = coordinator
-        self.station_id = station_id
-        self._attr_name = "Daily Peak Power"
-        self._attr_native_unit_of_measurement = "W"
-        self._attr_icon = "mdi:flash"
-        self._attr_device_class = "power"
-        self._attr_state_class = "measurement"
+    _attr_name = "Daily Peak Power"
+    _attr_native_unit_of_measurement = "W"
+    _attr_icon = "mdi:flash"
+    _attr_device_class = "power"
+    _attr_state_class = "measurement"
 
-        self._peak_today = 0
+    def __init__(
+        self, coordinator: EnvertechDataUpdateCoordinator, station_id: str
+    ) -> None:
+        super().__init__(coordinator, station_id)
+        self._peak_today = 0.0
         self._peak_time = None
         self._last_reset_date = None
 
     @property
-    def unique_id(self):
+    def unique_id(self) -> str:
+        """Return a unique ID for the daily peak sensor."""
         return f"{DOMAIN}_peak_power_today_{self.station_id}"
 
     @property
-    def device_info(self) -> DeviceInfo:
-        return DeviceInfo(
-            identifiers={(DOMAIN, self.station_id)},
-            name="Envertech Solar Station",
-            manufacturer=MANUFACTURER,
-            model="Envertech API",
-            entry_type="service",
-            configuration_url="https://github.com/jimmybonesde/envertech_solar",
-        )
-
-    @property
-    def native_value(self):
+    def native_value(self) -> float:
+        """Return the daily peak power."""
         return self._peak_today
 
     @property
-    def extra_state_attributes(self):
-        if self._peak_time:
-            return {
-                "peak_time": self._peak_time.strftime("%H:%M:%S"),
-                "last_reset": self._last_reset_date.isoformat() if self._last_reset_date else None,
-            }
-        return {"peak_time": None, "last_reset": None}
+    def extra_state_attributes(self) -> dict[str, str | None]:
+        """Return information about the recorded peak."""
+        return {
+            "peak_time": self._peak_time.isoformat() if self._peak_time else None,
+            "last_reset": (
+                self._last_reset_date.isoformat() if self._last_reset_date else None
+            ),
+        }
 
-    async def async_update(self):
-        await self.coordinator.async_request_refresh()
-        data = self.coordinator.data
-        if not data or "Data" not in data:
-            return
+    async def async_added_to_hass(self) -> None:
+        """Restore the last peak and include the initial coordinator data."""
+        await super().async_added_to_hass()
 
-        val = data["Data"].get("Power")
-        if val is None:
-            return
-
-        try:
-            cleaned = str(val).replace(",", ".").replace("W", "").replace("kW", "").strip()
-            number = float(cleaned)
-            if "kW" in str(val):
-                number *= 1000
-        except Exception:
-            return
-
-        today = datetime.now().date()
-        if self._last_reset_date != today:
-            self._peak_today = 0
-            self._peak_time = None
-            self._last_reset_date = today
-
-        if number > self._peak_today:
-            self._peak_today = number
-            self._peak_time = datetime.now()
-
-    async def async_added_to_hass(self):
-        """Restore last state on HA startup."""
         last_state = await self.async_get_last_state()
-        if last_state and last_state.state not in (None, "unknown", "unavailable"):
+        if last_state and last_state.state not in ("unknown", "unavailable"):
             try:
                 self._peak_today = float(last_state.state)
             except ValueError:
-                self._peak_today = 0
+                pass
 
-            peak_time_attr = last_state.attributes.get("peak_time")
-            if peak_time_attr:
+            peak_time = last_state.attributes.get("peak_time")
+            if peak_time:
                 try:
-                    self._peak_time = datetime.strptime(peak_time_attr, "%H:%M:%S")
-                except Exception:
-                    self._peak_time = None
+                    self._peak_time = dt_util.parse_datetime(peak_time)
+                except (TypeError, ValueError):
+                    pass
 
-            last_reset_attr = last_state.attributes.get("last_reset")
-            if last_reset_attr:
+            last_reset = last_state.attributes.get("last_reset")
+            if last_reset:
                 try:
-                    self._last_reset_date = datetime.fromisoformat(last_reset_attr).date()
-                except Exception:
-                    self._last_reset_date = None
+                    self._last_reset_date = dt_util.parse_date(last_reset)
+                except (TypeError, ValueError):
+                    pass
 
-        self.async_on_remove(
-            self.coordinator.async_add_listener(self.async_write_ha_state)
-        )
+        self._update_peak()
+        self.async_write_ha_state()
+
+    def _handle_coordinator_update(self) -> None:
+        """Update the peak before publishing coordinator data."""
+        self._update_peak()
+        super()._handle_coordinator_update()
+
+    def _update_peak(self) -> None:
+        """Update or reset the peak using the current coordinator data."""
+        data = self.coordinator.data
+        if not data:
+            return
+
+        power = data["Data"].get("Power")
+        if power is None:
+            return
+
+        number = _parse_number(power, "Power")
+        if not isinstance(number, (int, float)):
+            return
+
+        now = dt_util.now()
+        if self._last_reset_date != now.date():
+            self._peak_today = 0.0
+            self._peak_time = None
+            self._last_reset_date = now.date()
+
+        if number > self._peak_today:
+            self._peak_today = number
+            self._peak_time = now
+
+
+def _parse_number(value: Any, sensor_key: str) -> float | str:
+    """Convert an API value with optional unit text to a numeric value."""
+    cleaned = str(value).replace(",", ".").strip()
+    for unit, factor in (("MWh", 1000), ("kWh", 1), ("kW", 1000), ("W", 1), ("€", 1), ("ton", 1)):
+        if cleaned.endswith(unit):
+            cleaned = cleaned.removesuffix(unit).strip()
+            try:
+                return float(cleaned) * factor
+            except ValueError:
+                break
+
+    try:
+        return float(cleaned)
+    except ValueError:
+        _LOGGER.warning("Could not convert value '%s' for sensor '%s'", value, sensor_key)
+        return value
