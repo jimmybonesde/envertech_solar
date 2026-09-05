@@ -1,6 +1,11 @@
+"""Configuration flow for Envertech Solar."""
+
+from __future__ import annotations
+
+import voluptuous as vol
+
 from homeassistant import config_entries
 from homeassistant.core import callback
-import voluptuous as vol
 
 from .const import DOMAIN
 
@@ -8,6 +13,8 @@ DEFAULT_UPDATE_INTERVAL = 30
 
 
 class EnvertechConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+    """Handle an Envertech Solar configuration flow."""
+
     VERSION = 1
 
     @staticmethod
@@ -15,36 +22,44 @@ class EnvertechConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     def async_get_options_flow(
         config_entry: config_entries.ConfigEntry,
     ) -> EnvertechOptionsFlowHandler:
+        """Return the options flow handler."""
         return EnvertechOptionsFlowHandler()
 
     async def async_step_user(self, user_input=None):
+        """Handle the initial setup step."""
         errors = {}
 
         if user_input is not None:
-            return self.async_create_entry(
-                title="Envertech Solar",
-                data=user_input,
-                options={"update_interval": DEFAULT_UPDATE_INTERVAL},
-            )
+            station_id = user_input["station_id"].strip()
+            if not station_id:
+                errors["station_id"] = "invalid_station_id"
+            else:
+                await self.async_set_unique_id(station_id)
+                self._abort_if_unique_id_configured()
+                return self.async_create_entry(
+                    title="Envertech Solar",
+                    data={"station_id": station_id},
+                    options={"update_interval": DEFAULT_UPDATE_INTERVAL},
+                )
 
         return self.async_show_form(
             step_id="user",
-            data_schema=vol.Schema(
-                {
-                    vol.Required("station_id"): str,
-                }
-            ),
+            data_schema=vol.Schema({vol.Required("station_id"): str}),
+            errors=errors,
             description_placeholders={
-                "example_url": "https://www.envertecportal.com/terminal/systemhistory/YOUR_ID?sn=...",
+                "example_url": (
+                    "https://www.envertecportal.com/terminal/systemhistory/YOUR_ID?sn=..."
+                ),
                 "id_placeholder": "YOUR_ID",
             },
         )
 
 
 class EnvertechOptionsFlowHandler(config_entries.OptionsFlow):
-    """Options flow handler for update_interval."""
+    """Handle Envertech Solar options."""
 
     async def async_step_init(self, user_input=None):
+        """Handle the options step."""
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
