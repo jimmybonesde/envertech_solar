@@ -109,12 +109,7 @@ async def async_setup_entry(
 ):
     """Set up Envertech Solar sensors from a config entry."""
     station_id = entry.data["station_id"]
-    update_interval = entry.options.get("update_interval", 30)
-
-    coordinator = EnvertechDataUpdateCoordinator(hass, station_id, update_interval)
-    await coordinator.async_config_entry_first_refresh()
-
-    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
+    coordinator = hass.data[DOMAIN][entry.entry_id]
 
     sensors = [
         ("UnitCapacity", "Capacity", None, "mdi:solar-power"),
