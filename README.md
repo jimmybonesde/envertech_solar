@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="images/logo.png" alt="Envertech Solar" width="180">
+  <img src="https://github.com/jimmybonesde/Envertech_local/raw/main/brand/logo.png" alt="Envertech Solar" width="180">
 </p>
 
 <h1 align="center">Envertech Solar for Home Assistant</h1>
