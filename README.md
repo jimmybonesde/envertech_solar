@@ -1,161 +1,134 @@
-# Envertech Solar Integration for Home Assistant ☀️
+<p align="center">
+  <img src="images/logo.png" alt="Envertech Solar" width="180">
+</p>
 
-[![GitHub Release](https://img.shields.io/github/v/release/jimmybonesde/Envertech_solar?style=for-the-badge&logo=github&color=green)](https://github.com/jimmybonesde/Envertech_solar/releases)
-[![GitHub Stars](https://img.shields.io/github/stars/jimmybonesde/Envertech_solar?style=for-the-badge&logo=github&color=yellow)](https://github.com/jimmybonesde/Envertech_solar/stargazers)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+<h1 align="center">Envertech Solar for Home Assistant</h1>
 
+<p align="center">
+  <strong>Solar-Erträge, Leistung und Anlageninformationen direkt aus dem Envertech Solar Portal.</strong>
+</p>
 
-<img width="341" height="259" alt="logo" src="https://github.com/user-attachments/assets/d396989c-63ab-412f-ad09-fa1e0db7192d" />
+<p align="center">
+  <a href="https://github.com/jimmybonesde/envertech_solar/releases"><img src="https://img.shields.io/github/v/release/jimmybonesde/envertech_solar?style=flat&logo=github" alt="Aktuelles Release"></a>
+  <a href="https://github.com/jimmybonesde/envertech_solar/stargazers"><img src="https://img.shields.io/github/stars/jimmybonesde/envertech_solar?style=flat&logo=github" alt="GitHub Stars"></a>
+  <a href="https://www.hacs.xyz/"><img src="https://img.shields.io/badge/HACS-Default-41BDF5?logo=homeassistant&logoColor=white" alt="HACS"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="MIT-Lizenz"></a>
+</p>
 
-A custom Home Assistant integration to retrieve real-time data from the Envertech Solar Portal (`envertecportal.com`) using your station ID.
+<p align="center">
+  <a href="#-installation">Installation</a> ·
+  <a href="#-einrichtung">Einrichtung</a> ·
+  <a href="#-sensoren">Sensoren</a> ·
+  <a href="#-hilfe--faq">Hilfe & FAQ</a>
+</p>
 
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=jimmybonesde&repository=envertech_solar&category=integration)
+> **Envertech Solar** verbindet Home Assistant mit dem [Envertech Solar Portal](https://www.envertecportal.com/). Gib einmalig deine Station-ID ein und behalte Leistung, Ertrag und Anlageninformationen im Blick.
 
-## Features
+## ✨ Highlights
 
-- Live solar power in watts
-- Daily Peak Power (calculated from real-time power measurements)
-- All-Time Peak Power from Envertech API
-- Multi-language UI support (English, German, Dutch, Portuguese, Polish, Russian, Chinese)
-- Configurable update interval via Home Assistant UI (Options Flow)
-- Installed capacity (kWp)
-- Inverter model information
-- Daily, monthly, yearly, and total energy in kWh
-- Robust, ready-to-use sensor templates
-- HACS-compatible for easy installation and updates  
-  [Click here to add this integration to HACS](https://my.home-assistant.io/redirect/hacs_repository/?owner=jimmybonesde&repository=envertech_solar&category=integration)
-- Designed for Envertech ECO / SE series inverters (e.g. 2000SE)
+- ☀️ **Aktuelle Solarleistung** in Echtzeit
+- 🔋 **Tages-, Monats-, Jahres- und Gesamtertrag**
+- ⚡ **Tagesrekord** und **Allzeit-Spitzenleistung**
+- 💶 **Einspeisevergütung** und **CO₂-Einsparung**, sofern im Portal hinterlegt
+- 🔁 **Einstellbares Aktualisierungsintervall** direkt in Home Assistant
+- 🌍 Oberfläche in Englisch, Deutsch, Niederländisch, Portugiesisch, Polnisch, Russisch und Chinesisch
+- 🧩 Über **HACS** installierbar
+- 🔌 Entwickelt für Envertech ECO-/SE-Wechselrichter, z. B. 2000SE
 
-## Installation
+## 📦 Installation
 
-### 🧰 Installation (HACS – Official)
-1. Go to HACS → Integrations
-2. Click Explore & Download Repositories
-3. Search for Envertech Solar
-4. Install the integration
-5. Restart Home Assistant
-6. Go to Settings → Devices & Services → + Add Integration
-7. Search for Envertech Solar
-8. Enter your Station ID from `envertecportal.com`.
+### HACS · empfohlen
 
-💡 Custom repository is no longer needed!
-💡 After installation, you can set the data update interval in the integration options (via the ⚙️ gear icon in HA UI).
+[![Diese Integration in HACS öffnen](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=jimmybonesde&repository=envertech_solar&category=integration)
 
-> 💡 You can find your station ID in the browser URL after clicking one of your solar panels:  
-> `https://www.envertecportal.com/terminal/systemhistory/03GFF6E15154525DA16901EC7A4541G1?sn=3014511`  
-> → The string `03GFF6E15154525DA16901EC7A4541G1` is your station ID.
+1. Öffne **HACS → Integrationen**.
+2. Suche nach **Envertech Solar** und installiere die Integration.
+3. Starte Home Assistant neu.
+4. Öffne **Einstellungen → Geräte & Dienste → Integration hinzufügen**.
+5. Suche nach **Envertech Solar** und gib deine Station-ID ein.
 
-### 🛠️ Manual Installation
-1. Download or clone this repository.
-2. Copy the folder `envertech_solar` to:  
-   `custom_components/envertech_solar/` inside your Home Assistant config directory.
-3. Restart Home Assistant and follow the same setup as above.
+> 💡 Ein benutzerdefiniertes Repository ist nicht erforderlich.
 
-## 📡 Available Sensors
+### Manuell
 
-| Sensor Key        | Name               | Unit  | Description                                      |
-|-------------------|-------------------|-------|------------------------------------------------|
-| `Power`           | Current Power      | W     | Current solar power output                     |
-| `peak_power_today` | Daily Peak Power   | W     | Daily peak power calculated from live data    |
-| `strpeakpower`    | All-Time Peak Power | W     | Peak power ever recorded by the inverter (API)|
-| `UnitCapacity`    | Capacity           | kWp   | Installed solar system capacity               |
-| `InvModel1`       | Inverter Model     | —     | Model of the inverter                          |
-| `UnitEToday`      | Daily Energy       | kWh   | Energy produced today                          |
-| `UnitEMonth`      | Monthly Energy     | kWh   | Energy produced this month                     |
-| `UnitEYear`       | Yearly Energy      | kWh   | Energy produced this year                      |
-| `UnitETotal`      | Total Energy       | kWh   | Total energy since commissioning              |
-| "StrIncome"	      | Income             | €      | Refund in € if set in APP 			           |
-| "StrCO2           | Carbon Offset      | ton    | CO² offset                                    |
-| "CreateTime"      |  Start Date        |  None  | Date you setup your Envertec Powerstation |
+1. Lade dieses Repository herunter oder klone es.
+2. Kopiere `custom_components/envertech_solar` nach `config/custom_components/` deiner Home-Assistant-Installation.
+3. Starte Home Assistant neu und richte die Integration wie oben beschrieben ein.
 
- 
-<img width="339" height="724" alt="Bildschirmfoto vom 2025-11-03 23-23-24" src="https://github.com/user-attachments/assets/1715cfcf-a921-4880-ae17-04f783556493" />
+## ⚙️ Einrichtung
 
+Die Integration benötigt die **Station-ID** deiner Anlage. Nach der Einrichtung kannst du das Aktualisierungsintervall in der Integration über **⚙️ Konfigurieren** einstellen (Standard: 30 Sekunden; möglich: 10–3.600 Sekunden).
 
-## Credits
+<details>
+<summary><strong>🔍 Wo finde ich meine Station-ID?</strong></summary>
 
-Created with love for solar nerds by JimmyBones
-🌐 **[JimmyBones.de – Private Homepage](https://www.JimmyBones.de)**
+1. Öffne das [Envertech Solar Portal](https://www.envertecportal.com/terminal/systemoverview).
+2. Klicke auf eines deiner Solarpanels.
+3. In der URL steht ein Wert nach `/systemhistory/` und vor `?sn=`:
 
-## 💡 Tips & FAQ
+```text
+https://www.envertecportal.com/terminal/systemhistory/03GFF6E15154525DA16901EC7A4541G1?sn=3014511
+                                                     └──────── Station-ID ────────┘
+```
 
-### 🔍 Finding Your Station ID
-To set up the **Envertech Solar Integration**, you need your **Station ID**.  
-1. Open the [Envertech Portal](https://www.envertecportal.com/terminal/systemoverview).  
-2. Click on one of your solar panels:  
+<img width="400" alt="Im Envertech Portal ein Solarpanel auswählen" src="https://github.com/user-attachments/assets/77d86a11-26fe-4db6-a985-79ca1fdd157b" />
 
-<img width="400" alt="Click on a solar panel" src="https://github.com/user-attachments/assets/77d86a11-26fe-4db6-a985-79ca1fdd157b" />
+</details>
 
-3. Check the URL in your browser. It will look like this: https://www.envertecportal.com/terminal/systemhistory/03GFF6E15154525DA16901EC7A4541G1?sn=3014511
-4. The part after `/systemhistory/` and before `?sn=` is your **Station ID**:  > `03GFF6E15154525DA16901EC7A4541G1`
+## 📊 Sensoren
 
-### ⚡ Sensor Tips
-- **`Power`**: Real-time solar output in watts.  
-- **`UnitEToday`, `UnitEMonth`, `UnitEYear`, `UnitETotal`**: Cumulative energy in kWh – ideal for history cards.  
-- **`peak_power_today`**: Updates dynamically and persists across restarts.
-- **Update Interval**: Can be set in the integration options in Home Assistant (default: 30 sec, configurable 10–3600 sec).
-- **`strpeakpower`**: Retrieved from the Envertech API; may not update in real-time.
+| Icon | Sensor | Portalwert | Einheit | Beschreibung |
+| :--: | --- | --- | :--: | --- |
+| ☀️ | Aktuelle Leistung | `Power` | W | Momentane Solarleistung |
+| ⚡ | Tages-Spitzenleistung | `peak_power_today` | W | Höchster gemessener Leistungswert des laufenden Tages |
+| 🏆 | Allzeit-Spitzenleistung | `StrPeakPower` | W | Höchster, vom Portal gemeldeter Leistungswert |
+| 📐 | Anlagenleistung | `UnitCapacity` | kWp | Installierte Anlagenleistung |
+| 🔋 | Tagesenergie | `UnitEToday` | kWh | Heute erzeugte Energie |
+| 🗓️ | Monatsenergie | `UnitEMonth` | kWh | Im aktuellen Monat erzeugte Energie |
+| 📆 | Jahresenergie | `UnitEYear` | kWh | Im aktuellen Jahr erzeugte Energie |
+| ♾️ | Gesamtenergie | `UnitETotal` | kWh | Ertrag seit Inbetriebnahme |
+| 🔌 | Wechselrichtermodell | `InvModel1` | — | Vom Portal gemeldetes Wechselrichtermodell |
+| 💶 | Ertrag / Vergütung | `StrIncome` | EUR / PLN | Vergütung, sofern im Portal gepflegt |
+| 🌱 | CO₂-Einsparung | `StrCO2` | t | Vom Portal berechnete CO₂-Einsparung |
+| 📍 | Startdatum | `CreateTime` | — | Inbetriebnahmezeitpunkt der Anlage |
 
-### ❗ Common Issues
-- **Integration not appearing in HACS**: Ensure the repository is public and refresh HACS.  
-- **Invalid Station ID**: Double-check the ID copied from the portal URL.  
-- **Sensors showing `unknown`**: Verify your inverter is online and reporting data to the Envertech Portal.
+Die Energie-Sensoren eignen sich besonders für Verlaufskarten und das Home-Assistant-Energie-Dashboard.
 
-### 📊 Dashboard Tips
-- Use **gauge** cards for real-time power.  
-- Use **entity** or **entities** cards for cumulative energy metrics.  
-- Combine sensors in a **vertical-stack** or **grid** card for a clean overview.  
-- Optional: Apply conditional coloring on gauges (green/yellow/red) to visualize thresholds easily.
+## 🖼️ Beispiel
 
-## 📊 Example Dashboard Card
+<img width="484" alt="Beispiel eines Envertech-Solar-Dashboards in Home Assistant" src="https://github.com/user-attachments/assets/4d6787c6-ac72-4726-8753-f7537e0836e3" />
 
-<img width="484" height="605" alt="grafik" src="https://github.com/user-attachments/assets/4d6787c6-ac72-4726-8753-f7537e0836e3" />
+Für eine aufgeräumte Ansicht eignen sich:
 
-```yaml
-type: vertical-stack
-cards:
-  - type: markdown
-    content: |
-      ## ☀️ Solar Power Overview
-  - type: gauge
-    entity: sensor.current_power
-    name: Current Power
-    unit: W
-    min: 0
-    max: 2000
-    severity:
-      green: 0
-      yellow: 1000
-      red: 1500
-  - type: grid
-    columns: 2
-    square: false
-    cards:
-      - type: entity
-        entity: sensor.daily_energy
-        name: Daily Energy
-        unit: kWh
-        icon: mdi:weather-sunny
-      - type: entity
-        entity: sensor.monthly_energy
-        name: Monthly Energy
-        unit: kWh
-        icon: mdi:calendar-month
-      - type: entity
-        entity: sensor.yearly_energy
-        name: Yearly Energy
-        unit: kWh
-        icon: mdi:calendar
-      - type: entity
-        entity: sensor.total_energy
-        name: Total Energy
-        unit: kWh
-        icon: mdi:counter
-  - type: entities
-    entities:
-      - entity: sensor.daily_peak_power
-        name: Today’s Peak Power
-        icon: mdi:flash
-      - entity: sensor.all_time_peak_power
-        name: All-Time Peak Power
-        icon: mdi:flash
+- **Gauge-Karten** für die aktuelle Leistung
+- **Entities-Karten** für Tages-, Monats- und Jahresenergie
+- **Grid- oder Vertical-Stack-Karten** für eine kompakte Anlagenübersicht
+
+## ❓ Hilfe & FAQ
+
+**Die Integration erscheint nicht in HACS.**  
+Aktualisiere HACS und suche erneut nach **Envertech Solar**. Das Repository muss öffentlich erreichbar sein.
+
+**Die Station-ID ist ungültig.**  
+Prüfe, ob du exakt den Teil zwischen `/systemhistory/` und `?sn=` aus der Portal-URL kopiert hast.
+
+**Sensoren zeigen `unknown`.**  
+Stelle sicher, dass der Wechselrichter online ist und im Envertech Solar Portal Daten liefert. Prüfe anschließend die Home-Assistant-Protokolle auf Fehlermeldungen.
+
+**Die Werte aktualisieren zu langsam oder zu schnell.**  
+Passe das Aktualisierungsintervall über **Einstellungen → Geräte & Dienste → Envertech Solar → ⚙️ Konfigurieren** an.
+
+## 🤝 Mitwirken
+
+Fehlerberichte und Verbesserungsvorschläge sind willkommen:
+
+- 🐛 [Issue erstellen](https://github.com/jimmybonesde/envertech_solar/issues)
+- 🔀 [Pull Request öffnen](https://github.com/jimmybonesde/envertech_solar/pulls)
+- ⭐ Das Repository markieren, wenn es dir hilft
+
+## 🙏 Credits & Lizenz
+
+Created with ☀️ by **JimmyBones**  
+🌐 [JimmyBones.de](https://www.jimmybones.de)
+
+Veröffentlicht unter der [MIT-Lizenz](LICENSE).
