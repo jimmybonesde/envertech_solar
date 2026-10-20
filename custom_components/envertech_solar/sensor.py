@@ -23,12 +23,11 @@ from homeassistant.helpers.update_coordinator import (
 )
 from homeassistant.util import dt as dt_util
 
-from .const import DOMAIN
+from .const import DOMAIN, MANUFACTURER
 
 _LOGGER = logging.getLogger(__name__)
 
 API_URL = "https://www.envertecportal.com/ApiStations/getStationInfo"
-MANUFACTURER = "JimmyBones"
 
 # Order matters: longer units must be checked before their shorter variants.
 UNITS = (
@@ -79,7 +78,15 @@ async def fetch_data(session: aiohttp.ClientSession, station_id: str):
     async with async_timeout.timeout(10):
         async with session.post(API_URL, params=params) as response:
             response.raise_for_status()
-            return await response.json()
+            payload = await response.json()
+
+    # The API returns HTTP 200 even on errors; an unknown station yields
+    # {"Status": "1", "Result": "...", "Data": null}.
+    if payload is None or payload.get("Data") is None:
+        message = (payload or {}).get("Result") or "No data returned by the API"
+        raise UpdateFailed(f"Envertech API returned no data: {message}")
+
+    return payload
 
 
 class EnvertechDataUpdateCoordinator(DataUpdateCoordinator):
@@ -181,7 +188,8 @@ class EnvertechSensor(CoordinatorEntity, SensorEntity):
             return self._attr_native_unit_of_measurement
 
         data = self.coordinator.data or {}
-        value = str(data.get("Data", {}).get("StrIncome", "")).casefold()
+        station_data = data.get("Data") or {}
+        value = str(station_data.get("StrIncome", "")).casefold()
 
         if "zł" in value or "pln" in value:
             return "PLN"
@@ -192,7 +200,7 @@ class EnvertechSensor(CoordinatorEntity, SensorEntity):
     def native_value(self):
         """Return the current native sensor value."""
         data = self.coordinator.data
-        if not data or "Data" not in data:
+        if not data or not data.get("Data"):
             return None
 
         value = data["Data"].get(self.sensor_key)
@@ -206,7 +214,7 @@ class EnvertechSensor(CoordinatorEntity, SensorEntity):
                 _LOGGER.warning("Could not parse CreateTime '%s': %s", value, err)
                 return None
 
-        if self.sensor_key in ("UnitCapacity", "StrPeakPower", "InvModel1"):
+        if self.sensor_key == "InvModel1":
             return value
 
         try:
@@ -271,7 +279,7 @@ class EnvertechPeakTodaySensor(CoordinatorEntity, RestoreEntity, SensorEntity):
     def _update_peak_from_coordinator(self):
         """Update the daily peak value from coordinator data."""
         data = self.coordinator.data
-        if not data or "Data" not in data:
+        if not data or not data.get("Data"):
             return
 
         power_value = data["Data"].get("Power")

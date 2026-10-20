@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from homeassistant import config_entries
 from homeassistant.core import callback
 import voluptuous as vol
@@ -18,8 +20,6 @@ class EnvertechConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return EnvertechOptionsFlowHandler()
 
     async def async_step_user(self, user_input=None):
-        errors = {}
-
         if user_input is not None:
             return self.async_create_entry(
                 title="Envertech Solar",
