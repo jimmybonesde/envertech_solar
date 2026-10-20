@@ -120,14 +120,14 @@ async def async_setup_entry(
     coordinator = hass.data[DOMAIN][entry.entry_id]
 
     sensors = [
-        ("UnitCapacity", "Capacity", None, "mdi:solar-power"),
+        ("UnitCapacity", "Capacity", "W", "mdi:solar-power"),
         ("Power", "Current Power", "W", "mdi:solar-power"),
         ("UnitEToday", "Daily Energy", "kWh", "mdi:solar-power"),
         ("UnitEMonth", "Monthly Energy", "kWh", "mdi:solar-power"),
         ("UnitEYear", "Yearly Energy", "kWh", "mdi:solar-power"),
         ("UnitETotal", "Total Energy", "kWh", "mdi:solar-power"),
         ("InvModel1", "Inverter Model", None, "mdi:solar-power"),
-        ("StrPeakPower", "All-Time Peak Power", None, "mdi:flash"),
+        ("StrPeakPower", "All-Time Peak Power", "W", "mdi:flash"),
         ("StrIncome", "Income", "EUR", "mdi:cash"),
         ("StrCO2", "Carbon Offset", "ton", "mdi:molecule-co2"),
         ("CreateTime", "Start Date", None, "mdi:view-day"),
