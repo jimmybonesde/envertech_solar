@@ -34,6 +34,7 @@ UNITS = (
     ("MWh", 1000),
     ("kWh", 1),
     ("kKh", 1),  # Envertech API typo; treat as kWh
+    ("kWp", 1000),  # kilowatt-peak, e.g. UnitCapacity "7.00 kWp"
     ("kW", 1000),
     ("W", 1),
     ("EUR", 1),
